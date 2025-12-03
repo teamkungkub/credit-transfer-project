@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="utf-8">
+    <title>รายงานผลการเทียบโอน</title>
+    <style>
+        @font-face {
+            font-family: 'Sarabun';
+            font-style: normal;
+            font-weight: 400;
+            src: url('https://fonts.gstatic.com/s/sarabun/v14/DtVjJx26TKEr37c9YHZJmnYn.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'Sarabun';
+            font-style: normal;
+            font-weight: 700;
+            src: url('https://fonts.gstatic.com/s/sarabun/v14/DtVjJx26TKEr37c9YHZJmnYn.ttf') format('truetype');
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #000;
+            padding: 0 20px;
+        }
+
+        /* --- Header --- */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+            height: 80px;
+        }
+        .header-text {
+            text-align: center;
+        }
+        .university-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .faculty-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 5px 0 0 0;
+        }
+        .report-title {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0 20px 0;
+            text-decoration: underline;
+        }
+
+        /* --- Student Info --- */
+        .student-info {
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            align-items: flex-end; /* จัดให้ข้อความอยู่บรรทัดเดียวกัน */
+        }
+        .info-label {
+            font-weight: bold;
+            white-space: nowrap; /* ห้ามตัดคำ */
+            margin-right: 5px;
+        }
+        .info-value {
+            border-bottom: 1px dotted #000;
+            flex-grow: 1; /* ยืดให้เต็มพื้นที่ */
+            padding-left: 10px;
+        }
+
+        /* --- Table --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            vertical-align: middle;
+            font-size: 12px;
+        }
+        th {
+            background-color: #f0f0f0;
+            text-align: center;
+            font-weight: bold;
+            height: 40px;
+        }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        
+        .total-row td {
+            font-weight: bold;
+            background-color: #e8e8e8;
+        }
+
+        /* --- Signatures --- */
+        .signatures-container {
+            display: block; /* เปลี่ยนเป็น block เพื่อให้ควบคุม page-break ได้ดีขึ้น */
+            margin-top: 40px;
+            page-break-inside: avoid;
+        }
+        .signature-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .signature-block {
+            width: 45%; /* ปรับขนาดให้พอดี */
+            text-align: center;
+        }
+        .signature-line {
+            border-bottom: 1px dotted #000;
+            margin: 30px auto 5px auto;
+            width: 80%;
+            height: 1px;
+        }
+        .signatory-name {
+            display: block;
+            margin-top: 5px;
+        }
+        .signatory-role {
+            display: block;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <div class="header-text">
+            <p class="university-name">มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตสกลนคร</p>
+            <p class="faculty-name">คณะอุตสาหกรรมและเทคโนโลยี</p>
+        </div>
+    </div>
+
+    <div class="report-title">ตารางสรุปผลการเทียบความรู้และโอนผลการเรียน (รายบุคคล)</div>
+
+    <div class="student-info">
+        <div class="info-row">
+            <div style="width: 60%; display: flex;">
+                <span class="info-label">สำหรับนักศึกษาราย นาย/นาง/นางสาว:</span>
+                <span class="info-value">{{ request.student.first_name }} {{ request.student.last_name }}</span>
+            </div>
+            <div style="width: 5%;"></div>
+            <div style="width: 35%; display: flex;">
+                <span class="info-label">รหัสประจำตัวนักศึกษา:</span>
+                <span class="info-value">{{ student_id_safe }}</span>
+            </div>
+        </div>
+        <div class="info-row">
+            <div style="width: 45%; display: flex;">
+                <span class="info-label">สาขาวิชา:</span>
+                <span class="info-value">วิศวกรรมคอมพิวเตอร์</span>
+            </div>
+            <div style="width: 5%;"></div>
+            <div style="width: 50%; display: flex;">
+                <span class="info-label">โปรแกรมวิชา:</span>
+                <span class="info-value">{{ request.target_curriculum.name }}</span>
+            </div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 8%;">ลำดับ</th>
+                <th style="width: 15%;">รหัสวิชา</th>
+                <th style="width: 47%;">ชื่อวิชาเทียบโอน</th>
+                <th style="width: 10%;">หน่วยกิต</th>
+                <th style="width: 10%;">เกรดที่ได้</th>
+                <th style="width: 10%;">เทียบได้ใน<br>ภาคเรียนที่</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td class="text-center">{{ forloop.counter }}</td>
+                <td class="text-center">{{ item.aicomparisonresult.suggested_course.course_code }}</td>
+                <td class="text-left">{{ item.aicomparisonresult.suggested_course.course_name_th }}</td>
+                <td class="text-center">{{ item.aicomparisonresult.suggested_course.credits }}</td>
+                <td class="text-center">{{ item.grade }}</td>
+                <td class="text-center">1</td> </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">ไม่มีรายการที่ได้รับอนุมัติ</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="3" class="text-right">รวมเทียบโอน</td>
+                <td class="text-center">{{ total_credits }}</td>
+                <td colspan="2" class="text-left" style="padding-left: 10px;">หน่วยกิต</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="signatures-container">
+        <div class="signature-row">
+            <div class="signature-block">
+                <span class="signatory-label">ลงชื่อ</span>
+                <div class="signature-line"></div>
+                <span class="signatory-name">(.......................................................)</span>
+                <span class="signatory-role">คณะกรรมการพิจารณาเทียบโอนผลการเรียน (ลำดับที่ 1)</span>
+            </div>
+            <div class="signature-block">
+                <span class="signatory-label">ลงชื่อ</span>
+                <div class="signature-line"></div>
+                <span class="signatory-name">(.......................................................)</span>
+                <span class="signatory-role">คณะกรรมการพิจารณาเทียบโอนผลการเรียน (ลำดับที่ 2)</span>
+            </div>
+        </div>
+
+        <div class="signature-row">
+            <div class="signature-block">
+                <span class="signatory-label">ลงชื่อ</span>
+                <div class="signature-line"></div>
+                <span class="signatory-name">(.......................................................)</span>
+                <span class="signatory-role">คณะกรรมการพิจารณาเทียบโอนผลการเรียน (ลำดับที่ 3)</span>
+            </div>
+            <div class="signature-block">
+                <span class="signatory-label">ลงชื่อ</span>
+                <div class="signature-line"></div>
+                <span class="signatory-name">(ผู้ช่วยศาสตราจารย์นพเทพ ปัญญาแก้ว)</span>
+                <span class="signatory-role">รองคณบดีฝ่ายวิชาการและวิจัย</span>
+            </div>
+        </div>
+
+        <div class="signature-row" style="justify-content: flex-end;">
+            <div class="signature-block">
+                <span class="signatory-label">ลงชื่อ</span>
+                <div class="signature-line"></div>
+                <span class="signatory-name">(ผู้ช่วยศาสตราจารย์สุริยา แก้วอาษา)</span>
+                <span class="signatory-role">คณบดีคณะอุตสาหกรรมและเทคโนโลยี</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

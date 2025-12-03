@@ -1,0 +1,122 @@
+/* src/pages/OfficialReportPage.css */
+
+/* ตั้งค่าหน้ากระดาษ A4 */
+.report-container {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 2rem auto;
+  padding: 20mm;
+  background: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  color: black;
+  font-family: 'Sarabun', sans-serif; /* หรือฟอนต์ไทยที่มี */
+  font-size: 14px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Header */
+.report-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.report-header h3, .report-header h4 {
+  margin: 5px 0;
+}
+
+/* ตาราง */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.report-table th, .report-table td {
+  border: 1px solid black;
+  padding: 5px;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.report-table th {
+  background-color: #f0f0f0;
+  text-align: center;
+}
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+
+/* ส่วนลายเซ็น */
+.signatures-section {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sig-box {
+  text-align: center;
+  width: 45%;
+}
+
+.sig-line {
+  border-bottom: 1px dotted black;
+  height: 1px;
+  width: 80%;
+  margin: 30px auto 10px auto;
+}
+
+/* ปุ่มควบคุม (จะไม่ถูกปริ้น) */
+.print-controls {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.btn-print {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.btn-back {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 16px;
+  display: inline-block;
+}
+
+/* ตั้งค่าเมื่อสั่งปริ้น */
+@media print {
+  body {
+    background: none;
+    margin: 0;
+  }
+  .report-container {
+    margin: 0;
+    box-shadow: none;
+    width: 100%;
+    height: auto;
+    page-break-after: always;
+  }
+  .print-controls {
+    display: none; /* ซ่อนปุ่ม */
+  }
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}

@@ -1,0 +1,162 @@
+/* Full screen layout */
+.login-main {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  background: #f5f7fb;
+  font-family: "Prompt", sans-serif;
+}
+
+/* ---------------- LEFT SIDE ---------------- */
+.left-box {
+  flex: 1.2;
+  background: linear-gradient(135deg, #5b8dfd, #c45bff);
+  margin: 40px;
+  border-radius: 20px;
+  padding: 50px;
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.logo-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: white;
+  color: #5b8dfd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+.left-box h1 {
+  font-size: 2.4rem;
+  font-weight: 600;
+}
+
+.left-box p {
+  font-size: 1.1rem;
+  margin-top: 10px;
+  opacity: 0.9;
+}
+
+.website-link {
+  position: absolute;
+  bottom: 20px;
+  left: 40px;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+/* ---------------- RIGHT SIDE ---------------- */
+.right-box {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  width: 360px;
+  background: white;
+  padding: 30px;
+}
+
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+}
+
+/* ---------------- INPUT FIELDS ---------------- */
+.input-field {
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 18px;
+  padding-bottom: 6px;
+}
+
+.input-field .icon {
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+.input-field input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: none;
+}
+
+.forgot-link {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.forgot-link a {
+  color: #6b6fcf;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+/* ---------------- BUTTON ---------------- */
+.gradient-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 30px;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+
+  background: linear-gradient(90deg, #4da3ff, #ff3de2);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.gradient-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* ---------------- SOCIAL ICONS ---------------- */
+.signup-text {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.circle {
+  width: 34px;
+  height: 34px;
+  background: #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.fb { background: #1877f2; }
+.google { background: #ea4335; }
+.twitter { background: #1da1f2; }
+.insta { background: #d6249f; }
+
+/* ---------------- ERROR ---------------- */
+.error-text {
+  color: red;
+  text-align: center;
+  margin-bottom: 10px;
+}
