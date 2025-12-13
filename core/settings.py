@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-
+import dj_database_url
 # --- ตั้งค่า GTK3 สำหรับ WeasyPrint บน Windows ---
 if os.name == 'nt': # เช็คว่าเป็น Windows หรือไม่
     # Path นี้ต้องตรงกับที่คุณติดตั้ง GTK3 ไว้จริงในเครื่อง
@@ -32,10 +32,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6lj7ufok+msf@gsyt)59-26agm$^ak%1_fs+-zcwu+jx$2*j3b'
+#SECRET_KEY = 'django-insecure-6lj7ufok+msf@gsyt)59-26agm$^ak%1_fs+-zcwu+jx$2*j3b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+
+# อ่าน KEY จาก Cloud ถ้าไม่มีให้ใช้ key มั่วๆ ไปก่อน (กัน Error ตอนรันในเครื่อง)
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-me-later')
+
+# ถ้า Cloud บอกว่า DEBUG=False ก็จะเป็น False (Production) ถ้าไม่บอกจะเป็น True (Dev)
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -58,6 +64,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -89,16 +96,33 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+#DATABASES = {
+    #'default': {
+        #'ENGINE': 'django.db.backends.postgresql',
+        #'NAME': 'credit_transfer_db',
+        #'USER': 'credit_transfer_user',
+        #'PASSWORD': '1234', 
+        #'HOST': 'localhost',
+        #'PORT': '5433', # ตรวจสอบให้แน่ใจว่า Port นี้ถูกต้อง (ปกติ PostgreSQL ใช้ 5432 แต่ถ้าคุณตั้ง 5433 ก็ใช้ตามนี้)
+    #}
+#}
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'credit_transfer_db',
-        'USER': 'credit_transfer_user',
-        'PASSWORD': '1234', 
-        'HOST': 'localhost',
-        'PORT': '5433', # ตรวจสอบให้แน่ใจว่า Port นี้ถูกต้อง (ปกติ PostgreSQL ใช้ 5432 แต่ถ้าคุณตั้ง 5433 ก็ใช้ตามนี้)
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# 2. ตรวจสอบว่า "เฮ้ย นี่เราอยู่บน Cloud หรือเปล่า?"
+# Cloud ส่วนใหญ่จะส่งรหัสลับมาในชื่อ 'DATABASE_URL'
+database_url = os.environ.get('DATABASE_URL')
+
+if database_url:
+    # 3. ถ้าใช่ (มีรหัสลับส่งมา) แปลว่าอยู่บน Cloud
+    # ให้เปลี่ยน (Override) การตั้งค่าไปใช้ PostgreSQL ของ Cloud ทันที
+    DATABASES['default'] = dj_database_url.parse(database_url)
+
+
 
 
 # Password validation
@@ -135,8 +159,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -154,3 +179,6 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_HEADERS = ["Authorization", "Content-Type"]
 CORS_ALLOW_CREDENTIALS = True
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

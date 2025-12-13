@@ -70,6 +70,8 @@ class TransferRequest(models.Model):
     target_curriculum = models.ForeignKey(Curriculum, on_delete=models.SET_NULL, null=True, verbose_name="หลักสูตรเป้าหมาย")
     is_viewed_by_student = models.BooleanField(default=False)
 
+    evidence_file = models.ImageField("หลักฐานประกอบ (รูปภาพ)", upload_to='evidence/', null=True, blank=True)
+
     class Meta:
         verbose_name = "คำร้องเทียบโอน"
         verbose_name_plural = "3. คำร้องเทียบโอน"
@@ -128,6 +130,7 @@ class AIComparisonResult(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     student_id = models.CharField("รหัสนักศึกษา", max_length=20, unique=True, null=True, blank=True)
+    major = models.CharField("สาขาวิชา", max_length=255, null=True, blank=True)
 
     class Meta:
         verbose_name = "โปรไฟล์ผู้ใช้"

@@ -1,326 +1,264 @@
-/* src/pages/StudentDashboard.css */
-
-/* === Global Variables & Reset === */
-:root {
-  --primary-color: #4f46e5; /* สีม่วงครามทันสมัย */
-  --primary-hover: #4338ca;
-  --secondary-color: #64748b;
-  --background-bg: #f1f5f9;
-  --card-bg: #ffffff;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
-  --success-color: #10b981;
-  --danger-color: #ef4444;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --radius: 0.75rem; /* 12px */
-}
-
+/* ---------------------------------------------------
+   GLOBAL
+---------------------------------------------------*/
 body {
-  background-color: var(--background-bg);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: var(--text-main);
+  margin: 0;
+  font-family: 'Sarabun', sans-serif;
+  background: linear-gradient(135deg, #eef2f3, #dfe9f3);
 }
 
+/* ---------------------------------------------------
+   LAYOUT
+---------------------------------------------------*/
 .dashboard-container {
+  width: 100%;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
-/* === Header === */
+/* ---------------------------------------------------
+   HEADER
+---------------------------------------------------*/
+.glass-header {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
 .dashboard-header {
-  background-color: var(--card-bg);
-  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  padding: 18px 40px;
 }
 
-.dashboard-header h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  margin: 0;
+.header-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #023e8a;
 }
 
 .header-menu {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-}
-
-.user-info {
-  font-weight: 500;
-  color: var(--text-muted);
+  gap: 20px;
 }
 
 .logout-button {
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--border-color);
-  background: white;
-  color: var(--text-muted);
-  border-radius: 0.5rem;
+  padding: 8px 15px;
+  border: none;
+  background: #dc3545;
+  color: white;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
 }
 
 .logout-button:hover {
-  border-color: var(--danger-color);
-  color: var(--danger-color);
-  background: #fef2f2;
+  background: #c82333;
 }
 
-/* === Notification Bell === */
-.notification-bell {
+/* ---------------------------------------------------
+   NOTIFICATION
+---------------------------------------------------*/
+.notification-wrapper {
   position: relative;
-  cursor: pointer;
-  font-size: 1.25rem;
-  transition: transform 0.2s;
 }
 
-.notification-bell:hover {
-  transform: scale(1.1);
+.notification-bell {
+  cursor: pointer;
+  font-size: 22px;
+  position: relative;
 }
 
 .notification-badge {
   position: absolute;
-  top: -5px;
-  right: -5px;
-  background-color: var(--danger-color);
+  top: -6px;
+  right: -10px;
+  background: red;
+  padding: 2px 6px;
   color: white;
-  font-size: 0.7rem;
-  font-weight: bold;
-  height: 18px;
-  width: 18px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid white;
+  font-size: 12px;
 }
 
 .notification-dropdown {
   position: absolute;
-  top: 160%;
-  right: -10px;
-  width: 320px;
+  right: 0;
+  top: 35px;
+  width: 260px;
   background: white;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--border-color);
-  overflow: hidden;
-  z-index: 1000;
-  animation: slideDown 0.2s ease-out;
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  animation: fadeIn 0.2s ease;
 }
 
 .notification-item {
-  padding: 1rem;
-  border-bottom: 1px solid var(--background-bg);
-  font-size: 0.9rem;
-  line-height: 1.5;
-  transition: background 0.2s;
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #f1f5f9;
 }
 
-.notification-item:hover {
-  background-color: #f8fafc;
+.notif-success {
+  color: green;
 }
 
-.notification-item:last-child {
-  border-bottom: none;
+.notif-denied {
+  color: red;
 }
 
-/* === Main Content Area === */
+/* ---------------------------------------------------
+   MAIN CONTENT
+---------------------------------------------------*/
 .dashboard-main {
-  max-width: 1000px;
-  margin: 2rem auto;
-  width: 95%;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  max-width: 1400px;
+  margin: 25px auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 25px;
 }
 
-/* === Cards === */
+/* ---------------------------------------------------
+   CARD (Glassmorphism)
+---------------------------------------------------*/
+.glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
 .card {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-color);
-  padding: 2rem;
-  transition: box-shadow 0.3s;
+  padding: 25px;
+  border-radius: 20px;
 }
 
-.card:hover {
-  box-shadow: var(--shadow-md);
+/* ---------------------------------------------------
+   PROFILE
+---------------------------------------------------*/
+.profile-card h3 {
+  margin-bottom: 15px;
+  font-size: 1.4rem;
 }
 
-.card h2, .card h3 {
-  margin-top: 0;
-  color: var(--text-main);
-  border-bottom: 2px solid var(--background-bg);
-  padding-bottom: 1rem;
-  margin-bottom: 1.5rem;
+.profile-info p {
+  margin: 8px 0;
 }
 
-.card h3 {
-    font-size: 1.1rem;
-    color: var(--text-muted);
-    border-bottom: none;
-    padding-bottom: 0;
-    margin-bottom: 0.5rem;
+.btn-outline {
+  padding: 8px 15px;
+  background: none;
+  border: 2px solid #0077b6;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #0077b6;
 }
 
-/* === Profile Section === */
-.profile-display p {
-    margin: 0.75rem 0;
-    font-size: 1rem;
+.btn-outline:hover {
+  background: #0077b6;
+  color: white;
 }
 
-.profile-edit-form input {
-    width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    transition: border-color 0.2s;
+.btn-primary {
+  background: #0077b6;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
 }
 
-.profile-edit-form input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+.btn-gray {
+  padding: 10px;
+  background: #ccc;
+  border-radius: 10px;
 }
 
-/* === Form Steps === */
-.form-step-inner {
-    background: #f8fafc;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--border-color);
-    margin-bottom: 1.5rem;
+/* ---------------------------------------------------
+   FORM SECTION
+---------------------------------------------------*/
+.form-card h2 {
+  margin-bottom: 20px;
+  color: #023e8a;
 }
 
-.custom-select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    background-color: white;
-    font-size: 1rem;
-    color: var(--text-main);
-    cursor: pointer;
+.form-block {
+  margin-bottom: 25px;
 }
 
-.custom-select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-}
-
-/* === Course Table === */
-.course-table {
+.form-block select, 
+.form-block input[type="text"],
+.upload-block input[type="file"] {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  margin-top: 1rem;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  border: 1px solid var(--border-color);
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #aaa;
+  font-size: 1rem;
 }
 
-.course-table th {
-  background-color: #f1f5f9;
-  color: var(--text-muted);
-  font-weight: 600;
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.course-table td {
-  padding: 1rem;
-  border-bottom: 1px solid var(--border-color);
+.premium-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
   background: white;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
-.course-table tr:last-child td {
-  border-bottom: none;
+.premium-table th {
+  background: #0077b6;
+  color: white;
+  padding: 12px;
 }
 
-.course-table tr:hover td {
-  background-color: #f8fafc;
+.premium-table td {
+  padding: 10px;
+}
+
+.premium-table tr:hover {
+  background: #e3f2fd;
+}
+
+/* ---------------------------------------------------
+   SUBMIT BUTTON
+---------------------------------------------------*/
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  margin-top: 20px;
+  font-size: 1.1rem;
+  color: white;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #0077b6, #0096c7);
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #005f8c, #0077b6);
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #d0d0d0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: 0.2s;
+  background: #fafafa;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  background: #fff;
+  box-shadow: 0px 0px 8px rgba(74, 144, 226, 0.3);
 }
 
 .grade-input {
-  width: 60px;
-  padding: 0.5rem;
-  text-align: center;
-  border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
-  font-weight: bold;
-  color: var(--primary-color);
-}
-
-/* === Buttons === */
-.btn {
-    padding: 0.6rem 1.25rem;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-primary, .submit-button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-}
-
-.btn-primary:hover, .submit-button:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
-}
-
-.btn-edit {
-    background-color: transparent;
-    border: 1px solid var(--primary-color);
-    color: var(--primary-color);
-    margin-top: 1rem;
-}
-
-.btn-edit:hover {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.btn-cancel {
-    background-color: transparent;
-    color: var(--text-muted);
-    margin-left: 0.5rem;
-}
-
-.btn-cancel:hover {
-    text-decoration: underline;
-}
-
-.submit-button {
-    width: 100%;
-    margin-top: 1.5rem;
-    padding: 1rem;
-    font-size: 1.1rem;
+width: 30px;
+padding: 4px 6px;
+font-size: 5px;
+text-align: center;
+border-radius: 8px;
 }

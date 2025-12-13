@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import './LoginPage.css';
 
+import logo from "../images/logo.png"; // ../ ขึ้น 1 ชั้นจาก pages ไป images
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -28,11 +29,24 @@ function LoginPage() {
 
       {/* LEFT GRADIENT PANEL */}
       <div className="left-box">
-        <div className="logo-circle">LOGO</div>
-        <h1>Welcome to Page</h1>
-        <p>Sign in to continue access</p>
-        <span className="website-link">www.company.com</span>
-      </div>
+  {/* ใช้รูปโลโก้จริง */}
+  <div className="logo-circle">
+    <img
+  src={logo}
+  alt="Company Logo"
+  style={{
+    width: "450px",
+    height: "150px",
+    objectFit: "contain"
+  }}
+/>
+
+  </div>
+
+  <h1>Welcome to Page</h1>
+  <p>Sign in to continue access</p>
+  <span className="website-link">www.skc.rmuti.ac.th</span>
+</div>
 
       {/* RIGHT FORM PANEL */}
       <div className="right-box">

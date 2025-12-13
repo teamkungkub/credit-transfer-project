@@ -32,10 +32,24 @@ export const getCoursesByInstitution = (institutionId) => {
   // ส่ง institution_id ไปเป็น query parameter
   return apiClient.get(`/source-courses/?institution_id=${institutionId}`);
 };
-export const submitTransferRequest = (items, curriculumId) => {
-  return apiClient.post('/transfer-requests/', {
-    items: items,
-    target_curriculum: curriculumId,
+export const submitTransferRequest = (items, targetCurriculumId, file) => {
+  const formData = new FormData();
+  
+  // ใส่ข้อมูลปกติ
+  formData.append('target_curriculum', targetCurriculumId);
+  
+  // แปลงรายการวิชาเป็น JSON String แล้วยัดใส่ FormData
+  formData.append('items', JSON.stringify(items));
+  
+  // ถ้ามีไฟล์ ให้แนบไปด้วย
+  if (file) {
+    formData.append('evidence_file', file);
+  }
+
+  return apiClient.post('/transfer-requests/', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data', // สำคัญมาก!
+    },
   });
 };
 export const getPendingRequests = () => {
@@ -98,3 +112,4 @@ export const manageData = {
   update: (resource, id, data) => apiClient.put(`/manage/${resource}/${id}/`, data),
   delete: (resource, id) => apiClient.delete(`/manage/${resource}/${id}/`),
 };
+

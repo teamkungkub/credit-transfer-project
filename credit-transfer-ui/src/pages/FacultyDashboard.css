@@ -1,284 +1,385 @@
-/* src/pages/FacultyDashboard.css */
+/* ======================================
+   GLOBAL LAYOUT — Premium Soft UI
+====================================== */
+.faculty-dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #edf0f7, #f9fbff);
+  padding-bottom: 60px;
+  font-family: "Sarabun", sans-serif;
+  color: #2f2f2f;
+}
 
-/* === Layout หลัก === */
-.faculty-dashboard .dashboard-header {
+/* ======================================
+   HEADER — Glass + Logo + Luxury Shadow
+====================================== */
+.fd-header {
+  width: 100%;
+  padding: 18px 48px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px) saturate(180%);
+  border-bottom: 1px solid rgba(180, 180, 180, 0.35);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
-.faculty-dashboard .dashboard-main {
-  padding: 2rem;
-  background-color: #f9f9f9;
+/* Left Group (Logo + Title) */
+.fd-header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* เดิม 14px → ลดเพื่อให้ชิดมากขึ้น */
+  margin-left: -4px; /* ขยับทั้งกลุ่มเข้าไปชิดอีกระดับแบบเนียน ๆ */
 }
 
-.faculty-dashboard .dashboard-main h2 {
-    margin-top: 0;
+/* University Logo Style */
+.fd-logo {
+  height: 58px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.18));
+  margin-right: -6px; /* ขยับโลโก้เข้าหาข้อความอีกระดับแบบไม่แตก */
 }
 
-/* === การ์ดคำร้อง === */
-.request-list {
+/* Title */
+.fd-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f1f1f;
+  letter-spacing: 0.3px;
+  margin-left: -2px; /* ทำให้ตัวหนังสือเกาะโลโก้มากขึ้น */
+}
+
+/* Right Section */
+.fd-header-right {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+.fd-history-link {
+  font-size: 16px;
+  color: #555;
+  text-decoration: none;
+  transition: 0.25s ease;
+}
+.fd-history-link:hover {
+  color: #000;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+
+.fd-user {
+  font-size: 15px;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Logout Button */
+.fd-logout-btn {
+  padding: 9px 20px;
+  background: linear-gradient(135deg, #ff6a6a, #e03e3e);
+  border: none;
+  color: #fff;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  box-shadow: 0 4px 14px rgba(255, 60, 60, 0.35);
+}
+.fd-logout-btn:hover {
+  background: linear-gradient(135deg, #d23636, #b82b2b);
+  transform: translateY(-2px);
+}
+
+/* ======================================
+   MAIN CONTENT
+====================================== */
+.fd-main {
+  padding: 55px 60px;
+}
+
+.fd-section-title {
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 32px;
+  color: #272727;
+  padding-left: 10px;
+  border-left: 5px solid #4a62ff;
+}
+
+/* ======================================
+   EMPTY STATE
+====================================== */
+.fd-empty {
+  padding: 80px;
+  background: #ffffff;
+  border-radius: 24px;
+  text-align: center;
+  font-size: 19px;
+  color: #666;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+  border: 1px solid rgba(230,230,230,0.7);
+}
+
+/* ======================================
+   REQUEST CARD LIST
+====================================== */
+.fd-request-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 40px;
 }
 
-.request-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  overflow: hidden;
+.fd-request-card {
+  padding: 36px;
+  background: #ffffff;
+  border-radius: 26px;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.07);
+  transition: 0.25s ease;
+}
+.fd-request-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.13);
 }
 
-.request-card-header {
+/* ======================================
+   CARD HEADER
+====================================== */
+.fd-request-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  padding: 1rem 1.5rem;
-  background-color: #f7f7f7;
-  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 20px;
 }
 
-.request-card-header h3 {
-  margin: 0;
+.fd-student-name {
+  font-size: 21px;
+  font-weight: 800;
 }
 
-.student-info {
-  font-size: 0.9rem;
-  color: #666;
-  margin: 0.25rem 0 0 0;
+.fd-student-info {
+  font-size: 15px;
+  color: #777;
 }
 
-.request-date {
-  font-size: 0.85rem;
-  color: #888;
-  flex-shrink: 0;
-  margin-left: 1rem;
+.fd-major {
+  margin-left: 12px;
 }
 
-.request-card-body {
-  padding: 1.5rem;
+.fd-date {
+  color: #8a8a8a;
+  font-size: 14px;
 }
 
-.request-card-body p {
-    margin-top: 0;
+/* ======================================
+   REQUEST BODY
+====================================== */
+.fd-request-body {
+  margin-top: 16px;
+  border-top: 1px solid #efefef;
+  padding-top: 20px;
 }
 
-/* === ตารางรายวิชา (สำคัญ) === */
-.course-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
+.fd-target {
+  margin-bottom: 12px;
+  color: #444;
+  font-size: 15px;
 }
 
-.course-table th, .course-table td {
-    border: 1px solid #ddd;
-    padding: 0.75rem;
-    text-align: left;
-    vertical-align: top;
+.fd-evidence {
+  margin-bottom: 18px;
 }
 
-.course-table thead {
-    background-color: #f2f2f2;
+.fd-evidence-link {
+  color: #333;
+  margin-left: 8px;
+  text-decoration: underline;
+  transition: 0.2s;
+}
+.fd-evidence-link:hover {
+  color: #000;
 }
 
-.score-cell {
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.1rem;
+/* ======================================
+   TABLE — Premium Table
+====================================== */
+.fd-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
 }
 
-.no-result {
-    color: #999;
+.fd-table th {
+  background: #eef2ff;
+  padding: 14px;
+  text-align: center;
+  font-weight: 700;
+  border-bottom: 1px solid #d9d9d9;
 }
 
-/* === ส่วนปุ่ม Actions === */
-.request-card-actions {
-  padding: 1rem 1.5rem;
-  text-align: right;
-  background-color: #f7f7f7;
-  border-top: 1px solid #e0e0e0;
+.fd-table td {
+  padding: 17px;
+  border-bottom: 1px solid #f2f2f2;
 }
 
-.btn {
-  padding: 0.5rem 1rem;
+/* Course Info */
+.fd-course-info strong {
+  font-size: 15px;
+  color: #222;
+}
+.fd-course-info small {
+  display: block;
+  margin-top: 4px;
+  color: #777;
+  font-size: 13px;
+}
+
+/* ======================================
+   AI Suggestion
+====================================== */
+.fd-ai-suggestion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fd-info-btn {
+  background: #eeeeee;
   border: none;
-  border-radius: 4px;
-  color: white;
+  padding: 7px 12px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 0.9rem;
+  transition: 0.23s;
+}
+.fd-info-btn:hover {
+  background: #dcdcdc;
 }
 
-.btn-approve {
-  background-color: #28a745;
-  margin-right: 0.5rem;
+/* Score Colors */
+.fd-score {
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-weight: bold;
 }
 
-.btn-reject {
-  background-color: #dc3545;
+.score-green { background: #d6fbd6; color: #227022; }
+.score-yellow { background: #fff1c6; color: #b28000; }
+.score-red { background: #ffd4d4; color: #b33a3a; }
+
+/* Status Select */
+.fd-status-select {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid #cfcfcf;
+  background: #fafafa;
 }
 
-.btn-primary {
-    background-color: #007bff;
+/* ======================================
+   FOOTER BUTTON
+====================================== */
+.fd-request-footer {
+  text-align: right;
+  margin-top: 24px;
 }
 
-.status-select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.fd-save-btn {
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #3f3f3f, #171717);
+  border: none;
+  color: #fff;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
+.fd-save-btn:hover {
+  background: linear-gradient(135deg, #101010, #000);
+  transform: translateY(-2px);
+}
+
+/* ======================================
+   MODAL — Premium Overlay
+====================================== */
 .modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(7px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+  z-index: 1000;
 }
 
 .modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 900px;
-    max-height: 90vh;
-    overflow-y: auto;
+  width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #ffffff;
+  padding: 34px;
+  border-radius: 26px;
+  box-shadow: 0 14px 38px rgba(0,0,0,0.18);
 }
 
-.comparison-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.course-box {
-    padding: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-}
-
-.course-box.original { background-color: #fff5f5; }
-.course-box.suggested { background-color: #f0fff4; }
-
-.desc-text {
-    font-size: 0.9rem;
-    color: #555;
-    line-height: 1.6;
-}
-
-.ai-reason-box {
-    background-color: #e8f4fd;
-    padding: 1rem;
-    border-radius: 6px;
-    border-left: 5px solid #17a2b8;
-}
-.btn-info-icon {
-    background: none;
-    border: 1px solid #17a2b8;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #17a2b8;
-    cursor: pointer;
-    margin-left: 8px;
-    transition: all 0.2s;
-}
-
-.btn-info-icon:hover {
-    background-color: #17a2b8;
-    color: white;
-}
-
-/* Modal Styles */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    backdrop-filter: blur(2px);
-}
-
-.modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 1000px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-
+/* Header */
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 22px;
 }
 
 .modal-score {
-    background: #e8f4fd;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    color: #007bff;
-    font-weight: bold;
-    font-size: 1.1rem;
+  font-size: 18px;
+  font-weight: bold;
 }
 
+/* Grid Comparison */
 .comparison-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 .course-box {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    overflow: hidden;
+  background: #fafafa;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 5px 14px rgba(0,0,0,0.06);
 }
 
-.course-box.original { border-top: 4px solid #6c757d; }
-.course-box.suggested { border-top: 4px solid #28a745; }
-
-.box-header {
-    background-color: #f8f9fa;
-    padding: 1rem;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.box-header h4 { margin: 0 0 5px 0; color: #333; }
-.box-header span { color: #666; font-size: 0.9rem; }
-
-.box-body {
-    padding: 1.5rem;
-    background-color: #fff;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: #444;
-}
-
-
-
+/* AI Reason */
 .ai-reason-box {
-    background-color: #f0f8ff;
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid #b8daff;
+  margin-top: 30px;
+  background: #f7f7f7;
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid #e5e5e5;
 }
+
+/* Close */
+.btn-close-modal {
+  margin-top: 24px;
+  padding: 12px 22px;
+  background: #555;
+  border: none;
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.btn-close-modal:hover {
+  background: #333;
+}
+
+

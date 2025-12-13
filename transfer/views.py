@@ -10,6 +10,7 @@ from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.templatetags.static import static
 import base64
 import os
 from rest_framework import viewsets
@@ -60,50 +61,28 @@ class TransferEvaluationPDFView(APIView):
 
     def get(self, request, pk):
         try:
+            # ดึงคำร้อง
             transfer_request = TransferRequest.objects.get(pk=pk)
             approved_items = transfer_request.requestitem_set.filter(status='approved')
 
-            # --- 1. ระบุตำแหน่งไฟล์แบบตายตัว ---
-            # ใช้ Raw String (r"...") เพื่อรองรับ path ของ Windows
-            logo_path = r"C:\Users\teamk\credit_transfer_project\logo.png"
-            
-            print(f"\n{'='*30}")
-            print(f"🔍 กำลังตรวจสอบไฟล์ที่: {logo_path}")
-
-            logo_data = ""
-            
-            # เช็คว่ามีไฟล์จริงไหม
-            if os.path.exists(logo_path):
-                # --- ไม่ต้องแปลง Base64 แล้ว ---
-                # เราจะแปลง Path ของ Windows ให้เป็น URL ที่ WeasyPrint เข้าใจ (file:///)
-                # 1. เปลี่ยน Backslash (\) เป็น Forward Slash (/)
-                clean_path = logo_path.replace('\\', '/')
-                # 2. เติม file:/// ด้านหน้า
-                logo_data = f"file:///{clean_path}"
-                
-                print(f"✅ เจอไฟล์! สร้าง Link สำเร็จ: {logo_data}")
-            else:
-                print("❌ ไม่พบไฟล์! กรุณาเช็คว่าชื่อไฟล์ถูกต้องและวางไว้ที่ C:\\Users\\teamk\\credit_transfer_project\\")
-            
-            print(f"{'='*30}\n")
+            # สร้าง URL ของโลโก้จาก static
+            logo_url = request.build_absolute_uri(static('images/logo.png'))
 
             context = {
                 'request': transfer_request,
                 'items': approved_items,
-                'logo_data': logo_data, # ส่งเป็น URL (file:///...) ไปแทน
+                'logo_url': logo_url,  # ส่งไป template
             }
-            
-            try:
-                html_string = render_to_string('transfer/transfer_evaluation_form.html', context)
-            except Exception as e:
-                print(f"❌ Template Error: {e}")
-                raise e
-            
-            # base_url ไม่จำเป็นต้องใช้สำหรับรูปนี้แล้ว เพราะเราใส่ full path ไปแล้ว
-            html = HTML(string=html_string) 
+
+            # แปลง template เป็น HTML string
+            html_string = render_to_string('transfer/transfer_evaluation_form.html', context)
+
+            # สร้าง PDF
+            html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
             css = CSS(string='@page { size: A4 landscape; margin: 1cm; }')
             pdf_file = html.write_pdf(stylesheets=[css])
-            
+
+            # ส่ง PDF กลับ
             response = HttpResponse(pdf_file, content_type='application/pdf')
             response['Content-Disposition'] = f'inline; filename="evaluation_form_{pk}.pdf"'
             return response
@@ -111,8 +90,7 @@ class TransferEvaluationPDFView(APIView):
         except TransferRequest.DoesNotExist:
             return HttpResponse("ไม่พบคำร้อง", status=404)
         except Exception as e:
-             return HttpResponse(f"Error: {str(e)}", status=500)
-        
+            return HttpResponse(f"Error: {str(e)}", status=500)
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 

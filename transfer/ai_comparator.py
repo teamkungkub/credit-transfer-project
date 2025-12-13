@@ -7,8 +7,8 @@ import re # เพิ่ม library สำหรับจัดการข้�
 # โมเดลเดิม: 'paraphrase-multilingual-MiniLM-L12-v2'
 # โมเดลใหม่: 'intfloat/multilingual-e5-large'
 # โหลดโมเดล AI
-print("Loading AI Model (intfloat/multilingual-e5-large)... Please wait.")
-model = SentenceTransformer('intfloat/multilingual-e5-large')
+print("Loading AI Model (paraphrase-multilingual-MiniLM-L12-v2)... Please wait.")
+model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 
 print("AI Model Loaded Successfully!")
 

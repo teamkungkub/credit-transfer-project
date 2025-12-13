@@ -1,0 +1,248 @@
+/* Reset & base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Sarabun', sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Container */
+.approval-container {
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f8fa;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header / Top bar */
+.approval-header {
+  width: 100%;
+  padding: 1.5rem 2rem;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #2d4c7c;
+  transition: color 0.2s;
+}
+
+.back-btn:hover {
+  color: #1e3050;
+}
+
+.header-left h1 {
+  margin: 0;
+  font-size: 1.9rem;
+  color: #2d4c7c;
+}
+
+.header-right .link-dashboard {
+  color: #6c757d;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+
+.header-right .link-dashboard:hover {
+  color: #343a40;
+}
+
+/* Main content */
+.approval-main {
+  flex: 1;
+  padding: 2rem;
+}
+
+/* Card */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  overflow: hidden;
+  max-width: 900px;
+  margin: 0 auto 2rem auto;
+}
+
+.card-header {
+  background: #2d4c7c;
+  color: white;
+  padding: 1rem 1.5rem;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.card-body {
+  padding: 1.8rem 2rem;
+}
+
+.card-body section {
+  margin-bottom: 1.8rem;
+}
+
+.card-body h3 {
+  margin: 0 0 0.8rem 0;
+  color: #2d4c7c;
+}
+
+.card-body p {
+  margin: 0.4rem 0;
+  color: #333;
+}
+
+.card-body hr {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Table */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.course-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.course-table th, .course-table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.course-table thead {
+  background: #f1f5f9;
+}
+
+.course-table th {
+  text-align: left;
+  color: #495057;
+  font-weight: 600;
+}
+
+.course-table td .orig-course {
+  font-weight: 500;
+}
+
+.course-table td .arrow {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin: 4px 0;
+}
+
+.course-table td .new-course {
+  font-weight: 600;
+  color: #2d4c7c;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.status-tag {
+  padding: 6px 14px;
+  border-radius: 14px;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.status-tag.approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-tag.rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-tag.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+/* Buttons */
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+button {
+  font-family: 'Sarabun', sans-serif;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.9rem 1.6rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  padding: 0.9rem 1.6rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.btn-info:hover {
+  background-color: #138496;
+}
+
+.btn-primary {
+  background-color: #2d4c7c;
+  color: white;
+  border: none;
+  padding: 0.9rem 2.5rem;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #1e3050;
+}
+
+/* Loading state */
+.loading-container {
+  padding: 4rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #6c757d;
+}

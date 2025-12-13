@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
-    getTransferRequestDetail, 
-    downloadTransferReport,     // ปริ้นแบบย่อ
-    downloadEvaluationReport    // ปริ้นแบบเต็ม (แนวนอน) <-- Import เพิ่ม
+  getTransferRequestDetail, 
+  downloadTransferReport,
+  downloadEvaluationReport
 } from '../services/api';
-import './FacultyDashboard.css';
+import './ApprovalResultPage.css';
 
 function ApprovalResultPage() {
   const { id } = useParams();
@@ -19,7 +19,6 @@ function ApprovalResultPage() {
       .catch(err => console.error("Failed to load request", err));
   }, [id]);
 
-  // ฟังก์ชันสำหรับดาวน์โหลด PDF ทั่วไป (Helper Function)
   const downloadPDF = async (apiFunction, fileNamePrefix) => {
     try {
       const response = await apiFunction(id);
@@ -37,108 +36,98 @@ function ApprovalResultPage() {
     }
   };
 
-  if (!request) return <div style={{padding: '2rem', textAlign: 'center'}}>กำลังโหลดข้อมูล...</div>;
+  if (!request) {
+    return (
+      <div className="loading-container">
+        กำลังโหลดข้อมูล...
+      </div>
+    );
+  }
 
   return (
-    <div className="faculty-dashboard">
-      <header className="dashboard-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <button 
-                onClick={() => navigate(-1)} 
-                style={{ 
-                    background: 'none', border: 'none', color: '#007bff', 
-                    cursor: 'pointer', fontSize: '1.2rem', fontWeight: 'bold' 
-                }}
-                title="ย้อนกลับ"
-            >
-                &#8592;
-            </button>
-            <h1>สรุปผลการพิจารณา</h1>
+    <div className="approval-container">
+      {/* Top bar */}
+      <header className="approval-header">
+        <div className="header-left">
+          <button className="back-btn" onClick={() => navigate(-1)} title="ย้อนกลับ">
+            ←
+          </button>
+          <h1>สรุปผลการพิจารณา</h1>
         </div>
-        
-        <div className="header-menu">
-          <Link to="/faculty/dashboard" style={{ textDecoration: 'none', color: '#666' }}>กลับหน้าหลัก</Link>
+        <div className="header-right">
+          <Link to="/faculty/dashboard" className="link-dashboard">กลับหน้าหลัก</Link>
         </div>
       </header>
 
-      <main className="dashboard-main">
-        <div className="request-card" style={{ maxWidth: '800px', margin: '0 auto' }}>
-          
-          <div style={{ backgroundColor: '#f8f9fa', color: '#333', padding: '1rem', borderRadius: '8px 8px 0 0', borderBottom: '1px solid #e0e0e0', textAlign: 'center' }}>
-            <h2 style={{ margin: 0, fontSize: '1.2rem' }}>รายละเอียดคำร้อง #{request.id}</h2>
+      {/* Content */}
+      <main className="approval-main">
+        <div className="card request-card">
+          <div className="card-header">
+            <h2>คำร้อง #{request.id}</h2>
           </div>
-          
-          <div className="request-card-body">
-            <h3>ข้อมูลนักศึกษา</h3>
-            <p><strong>ชื่อ-นามสกุล:</strong> {request.student.first_name} {request.student.last_name}</p>
-            <p><strong>รหัสนักศึกษา:</strong> {request.student.profile?.student_id}</p>
-            <p><strong>หลักสูตร:</strong> {request.target_curriculum?.name}</p>
+          <div className="card-body">
+            <section className="student-info">
+              <h3>ข้อมูลนักศึกษา</h3>
+              <p><strong>ชื่อ-นามสกุล:</strong> {request.student.first_name} {request.student.last_name}</p>
+              <p><strong>รหัสนักศึกษา:</strong> {request.student.profile?.student_id || '-'}</p>
+              <p><strong>หลักสูตร:</strong> {request.target_curriculum?.name || '-'}</p>
+            </section>
 
-            <hr style={{ margin: '1.5rem 0', border: '0', borderTop: '1px solid #eee' }} />
+            <hr />
 
-            <h3>สรุปรายการวิชา</h3>
-            <table className="course-table">
-              <thead>
-                <tr>
-                  <th>วิชาเดิม -&gt; วิชาเทียบ</th>
-                  <th style={{ width: '150px', textAlign: 'center' }}>สถานะ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {request.items.map(item => (
-                  <tr key={item.id}>
-                    <td>
-                        <div>{item.original_course.course_code} {item.original_course.course_name_th}</div>
-                        <div style={{ color: '#666', fontSize: '0.9rem' }}>⬇️ เทียบเป็น</div>
-                        <div style={{ fontWeight: 'bold' }}>
+            <section className="course-comparison">
+              <h3>สรุปรายการวิชา</h3>
+              <div className="table-wrapper">
+                <table className="course-table">
+                  <thead>
+                    <tr>
+                      <th>วิชาเดิม → วิชาเทียบ</th>
+                      <th className="text-center">สถานะ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {request.items.map(item => (
+                      <tr key={item.id}>
+                        <td>
+                          <div className="orig-course">
+                            {item.original_course.course_code} {item.original_course.course_name_th}
+                          </div>
+                          <div className="arrow">⬇️ เทียบเป็น</div>
+                          <div className="new-course">
                             {item.aicomparisonresult?.suggested_course.course_code} {item.aicomparisonresult?.suggested_course.course_name_th}
-                        </div>
-                    </td>
-                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                      <span style={{
-                        fontWeight: 'bold',
-                        padding: '5px 10px',
-                        borderRadius: '15px',
-                        backgroundColor: item.status === 'approved' ? '#d4edda' : (item.status === 'rejected' ? '#f8d7da' : '#fff3cd'),
-                        color: item.status === 'approved' ? '#155724' : (item.status === 'rejected' ? '#721c24' : '#856404')
-                      }}>
-                        {item.status === 'approved' ? 'อนุมัติ' : (item.status === 'rejected' ? 'ปฏิเสธ' : 'รอตรวจสอบ')}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                          </div>
+                        </td>
+                        <td className="text-center">
+                          <span className={`status-tag ${item.status}`}>
+                            {item.status === 'approved' ? 'อนุมัติ' : (item.status === 'rejected' ? 'ปฏิเสธ' : 'รอตรวจสอบ')}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
           </div>
 
-          <div className="request-card-actions" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '2rem', alignItems: 'center' }}>
-            
-            {/* กลุ่มปุ่มพิมพ์ */}
-            <div style={{ display: 'flex', gap: '1rem' }}>
-                <button 
-                    onClick={() => downloadPDF(downloadTransferReport, 'transfer_report')} 
-                    className="btn"
-                    style={{ backgroundColor: '#6c757d', color: 'white', padding: '0.8rem 1.5rem', fontSize: '1rem' }}
-                >
-                    🖨️ พิมพ์ PDF (แบบย่อ)
-                </button>
-
-                <button 
-                    onClick={() => downloadPDF(downloadEvaluationReport, 'transfer_evaluation')} 
-                    className="btn"
-                    style={{ backgroundColor: '#17a2b8', color: 'white', padding: '0.8rem 1.5rem', fontSize: '1rem' }}
-                >
-                    📄 พิมพ์แบบประเมิน (แบบเต็ม)
-                </button>
+          <div className="card-actions">
+            <div className="btn-group">
+              <button
+                className="btn-secondary"
+                onClick={() => downloadPDF(downloadTransferReport, 'transfer_report')}
+              >
+                🖨️ พิมพ์ PDF (แบบย่อ)
+              </button>
+              <button
+                className="btn-info"
+                onClick={() => downloadPDF(downloadEvaluationReport, 'transfer_evaluation')}
+              >
+                📄 พิมพ์แบบประเมิน (แบบเต็ม)
+              </button>
             </div>
 
-            {/* ปุ่มย้อนกลับ */}
-            <button 
-                onClick={() => navigate(-1)} 
-                className="btn btn-primary" 
-                style={{ display: 'flex', alignItems: 'center', padding: '0.8rem 3rem', fontSize: '1.1rem', marginTop: '1rem' }}
-            >
-                เสร็จสิ้น / ย้อนกลับ
+            <button className="btn-primary" onClick={() => navigate(-1)}>
+              เสร็จสิ้น / ย้อนกลับ
             </button>
           </div>
         </div>

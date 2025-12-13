@@ -1,6 +1,7 @@
 # transfer/serializers.py
 from django.contrib.auth.models import User
 from rest_framework import serializers
+import json
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import (
     Institution,
@@ -39,7 +40,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['student_id']
+        fields = ['student_id','major']
+        
+        extra_kwargs = {
+            'student_id': {'validators': []}, 
+        }
 
 class UserDetailSerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer(source='userprofile')
@@ -61,6 +66,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         # ใช้ get_or_create เพื่อสร้าง profile หากยังไม่มี (ป้องกัน Error)
         profile, created = UserProfile.objects.get_or_create(user=instance)
         profile.student_id = profile_data.get('student_id', profile.student_id)
+        profile.major = profile_data.get('major', profile.major)
         profile.save()
         
         return instance
@@ -90,20 +96,33 @@ class RequestItemCreateSerializer(serializers.ModelSerializer):
         fields = ['original_course', 'grade']
 
 class TransferRequestCreateSerializer(serializers.ModelSerializer):
-    items = RequestItemCreateSerializer(many=True, write_only=True)
+    # เปลี่ยน items เป็น JSONField เพื่อรับ string จาก FormData ได้
+    items = serializers.JSONField(write_only=True) 
+    evidence_file = serializers.ImageField(required=False) # รับไฟล์
+
     class Meta:
         model = TransferRequest
-        fields = ['id', 'target_curriculum', 'items']
+        fields = ['id', 'target_curriculum', 'items', 'evidence_file']
 
     def create(self, validated_data):
-        items_data = validated_data.pop('items')
+        items_raw = validated_data.pop('items')
         
-        # สร้าง TransferRequest โดย View จะเป็นผู้กำหนด student จาก request.user เอง
+        # ถ้าส่งมาเป็น String (จาก FormData) ให้แปลงเป็น List
+        if isinstance(items_raw, str):
+            items_data = json.loads(items_raw)
+        else:
+            items_data = items_raw
+
+        # สร้างคำร้องพร้อมไฟล์แนบ
         transfer_request = TransferRequest.objects.create(**validated_data)
         
-        # สร้างรายการวิชาในคำร้อง
+        # สร้างรายการวิชา
         for item_data in items_data:
-            RequestItem.objects.create(transfer_request=transfer_request, **item_data)
+            RequestItem.objects.create(
+                transfer_request=transfer_request,
+                original_course_id=item_data['original_course'],
+                grade=item_data['grade']
+            )
             
         return transfer_request
 
@@ -149,7 +168,7 @@ class TransferRequestListSerializer(serializers.ModelSerializer):
     items = RequestItemDetailSerializer(many=True, source='requestitem_set', read_only=True)
     class Meta:
         model = TransferRequest
-        fields = ['id', 'student', 'status', 'created_at', 'target_curriculum', 'items']
+        fields = ['id', 'student', 'status', 'created_at', 'target_curriculum', 'items','evidence_file']
 
 class TransferRequestStatusUpdateSerializer(serializers.ModelSerializer):
     class Meta:

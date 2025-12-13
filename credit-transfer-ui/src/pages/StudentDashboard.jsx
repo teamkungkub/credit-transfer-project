@@ -1,4 +1,3 @@
-// src/pages/StudentDashboard.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import {
   getInstitutions,
@@ -15,50 +14,57 @@ import './StudentDashboard.css';
 function StudentDashboard() {
   const { user, logoutUser } = useContext(AuthContext);
 
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // States for data from API
   const [institutions, setInstitutions] = useState([]);
   const [targetCurriculums, setTargetCurriculums] = useState([]);
   const [courses, setCourses] = useState([]);
-  
-  // States for user's selections
+  const [evidenceFile, setEvidenceFile] = useState(null);
+
   const [selectedInstitution, setSelectedInstitution] = useState('');
   const [selectedTargetCurriculum, setSelectedTargetCurriculum] = useState('');
   const [selectedCourses, setSelectedCourses] = useState({});
 
-  // States for notifications
   const [notifications, setNotifications] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // States for Profile
   const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  // 🔍 ฟิลเตอร์วิชา
+  const filteredCourses = courses.filter(course =>
+    course.course_name_th.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    course.course_code.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   useEffect(() => {
-    // Fetch initial data on page load
-    getInstitutions().then(res => setInstitutions(res.data)).catch(err => console.error("Error fetching institutions:", err));
-    getTargetCurriculums().then(res => setTargetCurriculums(res.data)).catch(err => console.error("Error fetching curriculums:", err));
-    getProfile().then(res => setProfile(res.data)).catch(err => console.error("Error fetching profile:", err));
-    
+    getInstitutions().then(res => setInstitutions(res.data));
+    getTargetCurriculums().then(res => setTargetCurriculums(res.data));
+    getProfile().then(res => setProfile(res.data));
+
     const fetchNotifications = () => {
       getNotifications()
         .then(res => setNotifications(res.data))
         .catch(err => console.error("Error fetching notifications:", err));
     };
 
-    fetchNotifications(); // Initial fetch
-    const interval = setInterval(fetchNotifications, 30000); // Fetch every 30 seconds
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
 
-    return () => clearInterval(interval); // Cleanup on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   const handleInstitutionChange = (event) => {
     const institutionId = event.target.value;
     setSelectedInstitution(institutionId);
     setSelectedCourses({});
-    
+
     if (institutionId) {
-      getCoursesByInstitution(institutionId).then(res => setCourses(res.data)).catch(err => console.error(err));
+      getCoursesByInstitution(institutionId)
+        .then(res => setCourses(res.data))
+        .catch(err => console.error(err));
     } else {
       setCourses([]);
     }
@@ -67,8 +73,9 @@ function StudentDashboard() {
   const handleCourseChange = (courseId, field, value) => {
     setSelectedCourses(prev => {
       const courseData = prev[courseId] || {};
+
       if (field === 'checked') {
-        if (value === false) {
+        if (!value) {
           const { [courseId]: _, ...rest } = prev;
           return rest;
         }
@@ -83,32 +90,45 @@ function StudentDashboard() {
       alert('กรุณาเลือกหลักสูตรที่ต้องการเทียบโอน');
       return;
     }
-    const items = Object.keys(selectedCourses).map(courseId => ({
-      original_course: parseInt(courseId),
-      grade: selectedCourses[courseId].grade || '',
+
+    const items = Object.keys(selectedCourses).map(id => ({
+      original_course: parseInt(id),
+      grade: selectedCourses[id].grade || '',
     }));
+
     if (items.length === 0) {
       alert('กรุณาเลือกรายวิชาอย่างน้อย 1 รายการ');
       return;
     }
+
     try {
-      await submitTransferRequest(items, selectedTargetCurriculum);
+      setIsLoading(true);
+      await submitTransferRequest(items, selectedTargetCurriculum, evidenceFile);
       alert('ส่งคำร้องสำเร็จ!');
+
       setSelectedTargetCurriculum('');
       setSelectedInstitution('');
       setCourses([]);
       setSelectedCourses({});
     } catch (error) {
-      console.error('Failed to submit request', error);
+      console.error(error);
       alert('เกิดข้อผิดพลาดในการส่งคำร้อง');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // --- Functions for Profile ---
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'student_id') {
-      setProfile(prev => ({ ...prev, profile: { ...prev.profile, student_id: value } }));
+
+    if (name === 'student_id' || name === 'major') {
+      setProfile(prev => ({
+        ...prev,
+        profile: {
+          ...prev.profile,
+          [name]: value
+        }
+      }));
     } else {
       setProfile(prev => ({ ...prev, [name]: value }));
     }
@@ -116,114 +136,167 @@ function StudentDashboard() {
 
   const handleProfileSave = async () => {
     try {
-      const response = await updateProfile(profile);
-      setProfile(response.data);
-      alert('บันทึกข้อมูลสำเร็จ!');
+      const res = await updateProfile(profile);
+      setProfile(res.data);
+      alert('บันทึกข้อมูลสำเร็จ');
       setIsEditing(false);
     } catch (err) {
-      alert('บันทึกข้อมูลไม่สำเร็จ');
-      console.error("Failed to update profile", err);
+      console.error(err);
+      alert('เกิดข้อผิดพลาด');
     }
   };
 
   return (
     <div className="dashboard-container">
-      <header className="dashboard-header">
-        <h1>หน้าสำหรับนักศึกษา</h1>
+
+      {/* HEADER */}
+      <header className="dashboard-header glass-header">
+        <h1 className="header-title">📘 ระบบเทียบโอนผลการเรียน</h1>
+
         <div className="header-menu">
-          <div className="notification-bell" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-            <span>🔔</span>
-            {notifications.length > 0 && <span className="notification-badge">{notifications.length}</span>}
-            
+          <div className="notification-wrapper">
+            <div
+              className="notification-bell"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              🔔
+              {notifications.length > 0 &&
+                <span className="notification-badge">{notifications.length}</span>
+              }
+            </div>
+
             {isDropdownOpen && (
               <div className="notification-dropdown">
-                {notifications.length > 0 ? (
-                  notifications.map(notif => (
-                    <div key={notif.id} className="notification-item">
-                      คำร้องสำหรับหลักสูตร <strong>{notif.target_curriculum?.name}</strong>
-                      ได้รับการ <strong style={{color: notif.status === 'approved' ? 'green' : 'red'}}>
-                        {notif.status === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ'}
-                      </strong>
-                    </div>
-                  ))
-                ) : (
-                  <div className="notification-item">ไม่มีการแจ้งเตือนใหม่</div>
+                {notifications.length ? notifications.map(n => (
+                  <div key={n.id} className="notification-item">
+                    คำร้องหลักสูตร <strong>{n.target_curriculum?.name}</strong> ถูก
+                    <strong className={n.status === 'approved' ? "notif-success" : "notif-denied"}>
+                      {n.status === 'approved' ? " อนุมัติ" : " ปฏิเสธ"}
+                    </strong>
+                  </div>
+                )) : (
+                  <div className="notification-item">ไม่มีการแจ้งเตือน</div>
                 )}
               </div>
             )}
           </div>
-          <span className="user-info">สวัสดี, {user?.username}</span>
+
+          <span className="user-info">👋 {user?.username}</span>
           <button onClick={logoutUser} className="logout-button">ออกจากระบบ</button>
         </div>
       </header>
 
+      {/* MAIN */}
       <main className="dashboard-main">
-        {/* --- Card 1: ข้อมูลนักศึกษา --- */}
-        <div className="card profile-section">
+
+        {/* Profile card */}
+        <div className="card profile-card glass">
           <h3>ข้อมูลนักศึกษา</h3>
+
           {isEditing ? (
-            <div className="profile-edit-form">
-              <input name="first_name" value={profile?.first_name || ''} onChange={handleProfileChange} placeholder="ชื่อจริง"/>
-              <input name="last_name" value={profile?.last_name || ''} onChange={handleProfileChange} placeholder="นามสกุล"/>
-              <input name="student_id" value={profile?.profile?.student_id || ''} onChange={handleProfileChange} placeholder="รหัสนักศึกษา"/>
-              <button onClick={handleProfileSave} className="btn btn-primary">บันทึก</button>
-              <button onClick={() => setIsEditing(false)} className="btn">ยกเลิก</button>
+            <div className="profile-edit-grid">
+              <input name="first_name" value={profile?.first_name || ""} onChange={handleProfileChange} placeholder="ชื่อจริง" />
+              <input name="last_name" value={profile?.last_name || ""} onChange={handleProfileChange} placeholder="นามสกุล" />
+              <input name="student_id" value={profile?.profile?.student_id || ""} onChange={handleProfileChange} placeholder="รหัสนักศึกษา" />
+              <input name="major" value={profile?.profile?.major || ""} onChange={handleProfileChange} placeholder="สาขา" />
+
+              <button className="btn-primary" onClick={handleProfileSave}>บันทึก</button>
+              <button className="btn-gray" onClick={() => setIsEditing(false)}>ยกเลิก</button>
             </div>
           ) : (
-            <div className="profile-display">
-              <p><strong>ชื่อ-นามสกุล:</strong> {profile?.first_name || '-'} {profile?.last_name || ''}</p>
-              <p><strong>รหัสนักศึกษา:</strong> {profile?.profile?.student_id || 'ยังไม่ได้กรอก'}</p>
-              <button onClick={() => setIsEditing(true)} className="btn btn-edit">แก้ไขข้อมูล</button>
+            <div className="profile-info">
+              <p><strong>ชื่อ:</strong> {profile?.first_name} {profile?.last_name}</p>
+              <p><strong>รหัสนักศึกษา:</strong> {profile?.profile?.student_id}</p>
+              <p><strong>สาขาวิชา:</strong> {profile?.profile?.major}</p>
+
+              <button className="btn-outline" onClick={() => setIsEditing(true)}>แก้ไขข้อมูล</button>
             </div>
           )}
         </div>
 
-        {/* --- Card 2: ยื่นคำร้อง --- */}
-        <div className="card form-container">
-            <h2>ยื่นคำร้องเทียบโอนผลการเรียน</h2>
-            <div className="form-step-inner">
-                <h3>ขั้นตอนที่ 1: เลือกหลักสูตรที่ต้องการเทียบโอน (หลักสูตรใหม่)</h3>
-                <select className="custom-select" value={selectedTargetCurriculum} onChange={(e) => setSelectedTargetCurriculum(e.target.value)}>
-                    <option value="">-- กรุณาเลือกหลักสูตร --</option>
-                    {targetCurriculums.map(curr => <option key={curr.id} value={curr.id}>{curr.name}</option>)}
-                </select>
+        {/* Form card */}
+        <div className="card form-card glass">
+          <h2 className="form-title">📄 ยื่นคำร้องเทียบโอนผลการเรียน</h2>
+
+          {/* STEP 1 */}
+          <div className="form-block">
+            <label>ขั้นตอนที่ 1: หลักสูตรที่ต้องการเทียบโอน</label>
+            <select value={selectedTargetCurriculum} onChange={e => setSelectedTargetCurriculum(e.target.value)}>
+              <option value="">-- เลือกหลักสูตร --</option>
+              {targetCurriculums.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+
+          {/* STEP 2 */}
+          <div className="form-block">
+            <label>ขั้นตอนที่ 2: หลักสูตรสถาบันเดิม</label>
+            <select value={selectedInstitution} onChange={handleInstitutionChange}>
+              <option value="">-- เลือกสถาบัน --</option>
+              {institutions.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
+            </select>
+          </div>
+
+          {/* STEP 3 */}
+          {courses.length > 0 && (
+            <div className="form-block">
+              <label>ขั้นตอนที่ 3: เลือกรายวิชา</label>
+
+              {/* 🔍 ช่องค้นหา */}
+              <input
+                type="text"
+                className="course-search-input"
+                placeholder="ค้นหารายวิชา หรือรหัสวิชา..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+
+              <table className="course-table premium-table">
+                <thead>
+                  <tr>
+                    <th>✔</th>
+                    <th>รหัส</th>
+                    <th>ชื่อรายวิชา</th>
+                    <th>หน่วยกิต</th>
+                    <th>เกรด</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredCourses.map(course => (
+                    <tr key={course.id}>
+                      <td><input type="checkbox"
+                        checked={!!selectedCourses[course.id]}
+                        onChange={e => handleCourseChange(course.id, 'checked', e.target.checked)}
+                      /></td>
+                      <td>{course.course_code}</td>
+                      <td>{course.course_name_th}</td>
+                      <td>{course.credits}</td>
+                      <td>
+                        <input type="text"
+                          disabled={!selectedCourses[course.id]}
+                          value={selectedCourses[course.id]?.grade || ''}
+                          onChange={e => handleCourseChange(course.id, 'grade', e.target.value)}
+                          className="grade-input"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {/* FILE UPLOAD */}
+              <div className="upload-block">
+                <label>แนบหลักฐาน (ถ้ามี)</label>
+                <input type="file" accept="image/*" onChange={(e) => setEvidenceFile(e.target.files[0])} />
+              </div>
+
+              <button className="submit-btn" onClick={handleSubmit} disabled={isLoading}>
+                {isLoading ? "กำลังส่ง..." : "ส่งคำร้อง"}
+              </button>
             </div>
-            <div className="form-step-inner">
-                <h3>ขั้นตอนที่ 2: เลือกหลักสูตรที่จบจากสถาบันการศึกษาเดิม</h3>
-                <select className="custom-select" value={selectedInstitution} onChange={handleInstitutionChange}>
-                    <option value="">-- กรุณาเลือกสถาบัน --</option>
-                    {institutions.map(inst => <option key={inst.id} value={inst.id}>{inst.name}</option>)}
-                </select>
-            </div>
-            {courses.length > 0 && (
-                <div className="form-step-inner">
-                    <h3>ขั้นตอนที่ 3: เลือกรายวิชาและกรอกเกรด</h3>
-                    <table className="course-table">
-                        <thead>
-                        <tr>
-                            <th>เลือก</th>
-                            <th>รหัสวิชา</th>
-                            <th>ชื่อวิชา</th>
-                            <th>หน่วยกิต</th>
-                            <th>เกรดที่ได้รับ</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {courses.map((course) => (
-                            <tr key={course.id}>
-                            <td><input type="checkbox" checked={!!selectedCourses[course.id]} onChange={e => handleCourseChange(course.id, 'checked', e.target.checked)} /></td>
-                            <td>{course.course_code}</td>
-                            <td>{course.course_name_th}</td>
-                            <td>{course.credits}</td>
-                            <td><input type="text" className="grade-input" disabled={!selectedCourses[course.id]} value={selectedCourses[course.id]?.grade || ''} onChange={e => handleCourseChange(course.id, 'grade', e.target.value)} /></td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                    <button className="submit-button" onClick={handleSubmit}>ส่งคำร้อง</button>
-                </div>
-            )}
+          )}
         </div>
+
       </main>
     </div>
   );

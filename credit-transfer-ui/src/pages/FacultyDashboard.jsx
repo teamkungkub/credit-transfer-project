@@ -1,4 +1,3 @@
-// src/pages/FacultyDashboard.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { 
   getPendingRequests, 
@@ -10,26 +9,22 @@ import AuthContext from '../context/AuthContext';
 import './FacultyDashboard.css';
 import { Link, useNavigate } from 'react-router-dom';
 
-// --- Component ช่วยไฮไลท์คำที่เหมือนกันในคำอธิบายรายวิชา ---
+// --- Component ไฮไลท์คำที่ตรงกัน ---
 const HighlightedText = ({ text, compareWith }) => {
   if (!text) return <p className="desc-text">-ไม่มีข้อมูล-</p>;
   if (!compareWith) return <p className="desc-text">{text}</p>;
 
-  // 1. แยกคำจากข้อความคู่เทียบ (เพื่อเอามาเป็นคีย์เวิร์ด)
-  // ตัดตัวอักษรพิเศษออก และแยกด้วยช่องว่าง
   const compareWords = new Set(
     compareWith.replace(/[^\w\sก-๙]/g, '').toLowerCase().split(/\s+/)
   );
 
-  // 2. แยกคำจากข้อความหลักที่จะแสดง
   const words = text.split(/(\s+)/); 
 
   return (
     <div className="desc-text-container">
       {words.map((word, index) => {
-        const cleanWord = word.replace(/[^\w\sก-๙]/g, '').toLowerCase();
-        // ไฮไลท์ถ้าคำยาวกว่า 1 ตัวอักษร และมีอยู่ในอีกข้อความ
-        if (cleanWord.length > 1 && compareWords.has(cleanWord)) {
+        const clean = word.replace(/[^\w\sก-๙]/g, '').toLowerCase();
+        if (clean.length > 1 && compareWords.has(clean)) {
           return <span key={index} className="highlight-word">{word}</span>;
         }
         return <span key={index}>{word}</span>;
@@ -43,7 +38,6 @@ function FacultyDashboard() {
   const { user, logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // State สำหรับ Modal
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 
@@ -52,7 +46,10 @@ function FacultyDashboard() {
       .then(response => {
         const data = response.data.map(req => ({
           ...req,
-          items: req.items.map(item => ({...item, initialStatus: item.status}))
+          items: req.items.map(item => ({
+            ...item,
+            initialStatus: item.status
+          }))
         }));
         setRequests(data);
       })
@@ -63,7 +60,6 @@ function FacultyDashboard() {
     fetchRequests();
   }, []);
 
-  // --- ฟังก์ชันเปิดหน้าต่างเปรียบเทียบคำอธิบาย ---
   const openReasonModal = (item) => {
     setModalContent({
         original: item.original_course,
@@ -75,10 +71,10 @@ function FacultyDashboard() {
   };
 
   const handleItemStatusChange = (reqId, itemId, newStatus) => {
-    setRequests(prevRequests => 
-      prevRequests.map(req => {
+    setRequests(prev =>
+      prev.map(req => {
         if (req.id === reqId) {
-          const updatedItems = req.items.map(item => 
+          const updatedItems = req.items.map(item =>
             item.id === itemId ? { ...item, status: newStatus } : item
           );
           return { ...req, items: updatedItems };
@@ -88,15 +84,10 @@ function FacultyDashboard() {
     );
   };
 
-  const handleCourseSelectionChange = async (reqId, itemId, originalCourseId, newTargetCourseId) => {
-    // ... (Logic การเปลี่ยนวิชา - ถ้ามี) ...
-    // (ถ้าไม่ได้ใช้ฟังก์ชันเปลี่ยนวิชาในหน้านี้ สามารถละไว้ได้ หรือใช้โค้ดเดิม)
-  };
-
   const handleSaveChanges = async (request) => {
     const changedItems = request.items.filter(item => item.status !== item.initialStatus);
     if (changedItems.length === 0) {
-      alert("กรุณาเลือกสถานะ (อนุมัติ/ปฏิเสธ) ก่อนบันทึก");
+      alert("กรุณาเลือกสถานะก่อนบันทึก");
       return;
     }
 
@@ -110,98 +101,153 @@ function FacultyDashboard() {
     }
   };
 
-  const handleDownloadPDF = async (requestId) => {
-     // ... (Logic PDF เดิม) ...
-  };
-
   return (
     <div className="faculty-dashboard">
-      <header className="dashboard-header">
-        <h1>หน้าสำหรับเจ้าหน้าที่</h1>
-        <div className="header-menu">
-          <Link to="/faculty/history" style={{ marginRight: '15px', textDecoration: 'none', color: '#007bff', fontWeight: 'bold' }}>
-            ดูประวัติคำร้อง
-          </Link>
-          <span className="user-info">สวัสดี, {user?.username || 'เจ้าหน้าที่'}</span>
-          <button onClick={logoutUser} className="logout-button">ออกจากระบบ</button>
-        </div>
-      </header>
 
-      <main className="dashboard-main">
-        <h2>คำร้องที่รอการตรวจสอบ</h2>
+      {/* ===== HEADER ===== */}
+     <header className="fd-header glass-blue shadow-md">
+
+  {/* LEFT AREA (Logo + Title) */}
+  <div className="fd-header-left">
+    <img src="/logo.png" className="fd-logo" />
+    <h1 className="fd-title">ระบบตรวจสอบคำร้องเทียบโอน</h1>
+  </div>
+
+  {/* RIGHT AREA */}
+  <div className="fd-header-right">
+    <Link to="/faculty/history" className="fd-history-link">
+      ดูประวัติคำร้อง
+    </Link>
+
+    <span className="fd-user">
+      👤 {user?.username || 'เจ้าหน้าที่'}
+    </span>
+
+    <button className="fd-logout-btn" onClick={logoutUser}>
+      ออกจากระบบ
+    </button>
+  </div>
+
+</header>
+
+
+      {/* ===== MAIN ===== */}
+      <main className="fd-main">
+        <h2 className="fd-section-title">คำร้องที่รอการตรวจสอบ</h2>
+
         {requests.length === 0 ? (
-          <p style={{textAlign: 'center', marginTop: '2rem', color: '#666'}}>ไม่มีคำร้องที่รอการตรวจสอบ</p>
+          <div className="fd-empty">ไม่มีคำร้องที่รอการตรวจสอบ</div>
         ) : (
-          <div className="request-list">
+          <div className="fd-request-list">
             {requests.map(req => (
-              <div key={req.id} className="request-card">
-                <div className="request-card-header">
+              <div key={req.id} className="fd-request-card glass-white">
+
+                {/* = Header = */}
+                <div className="fd-request-header">
                   <div>
-                    <h3>{req.student.first_name} {req.student.last_name}</h3>
-                    <p className="student-info">รหัสนักศึกษา: {req.student.profile?.student_id || 'N/A'}</p>
+                    <h3 className="fd-student-name">
+                      {req.student.first_name} {req.student.last_name}
+                    </h3>
+                    <p className="fd-student-info">
+                      รหัสนักศึกษา: {req.student.profile?.student_id || 'N/A'}
+                      <span className="fd-major">
+                        สาขาวิชา: {req.student.profile?.major || '-'}
+                      </span>
+                    </p>
                   </div>
-                  <div className="request-date">{new Date(req.created_at).toLocaleString('th-TH')}</div>
+
+                  <div className="fd-date">
+                    {new Date(req.created_at).toLocaleString('th-TH')}
+                  </div>
                 </div>
-                <div className="request-card-body">
-                  <p><strong>ต้องการเทียบโอนเข้าหลักสูตร:</strong> {req.target_curriculum?.name || 'ไม่ได้ระบุ'}</p>
-                  
-                  <table className="course-table">
+
+                {/* = Body = */}
+                <div className="fd-request-body">
+                  <p className="fd-target">
+                    <strong>หลักสูตรที่ต้องการเทียบโอน:</strong> {req.target_curriculum?.name || 'ไม่ได้ระบุ'}
+                  </p>
+
+                  {/* หลักฐาน */}
+                  {req.evidence_file && (
+                    <div className="fd-evidence">
+                      <strong>หลักฐานแนบ:</strong>
+                      <a 
+                        href={req.evidence_file}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="fd-evidence-link"
+                      >
+                        📄 เปิดดูหลักฐาน
+                      </a>
+                    </div>
+                  )}
+
+                  {/* ตารางรายการวิชา */}
+                  <table className="fd-table">
                     <thead>
                       <tr>
-                        <th style={{width: '30%'}}>รายวิชาและสถาบันเดิม</th>
-                        <th style={{width: '35%'}}>รายวิชาที่ AI แนะนำ</th>
-                        <th style={{width: '15%', textAlign: 'center'}}>ความสอดคล้อง</th>
-                        <th style={{width: '20%'}}>การตัดสินใจ</th>
+                        <th>รายวิชาเดิม</th>
+                        <th>รายวิชาที่ AI แนะนำ</th>
+                        <th>ความสอดคล้อง</th>
+                        <th>สถานะ</th>
                       </tr>
                     </thead>
+
                     <tbody>
                       {req.items.map(item => (
                         <tr key={item.id}>
                           <td>
-                            <strong>{item.original_course.course_code}</strong><br/>
-                            {item.original_course.course_name_th}
-                            <br/><small>จาก: {item.original_course.institution.name}</small>
-                            <br/><small>เกรด: {item.grade}</small>
+                            <div className="fd-course-info">
+                              <strong>{item.original_course.course_code}</strong>
+                              <div>{item.original_course.course_name_th}</div>
+                              <small>จาก: {item.original_course.institution.name}</small>
+                              <small>เกรด: {item.grade}</small>
+                            </div>
                           </td>
+
                           <td>
-                             {item.aicomparisonresult ? (
-                                <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between'}}>
-                                    <div>
-                                        <strong>{item.aicomparisonresult.suggested_course.course_code}</strong><br/>
-                                        {item.aicomparisonresult.suggested_course.course_name_th}
-                                    </div>
-                                    {/* ปุ่มดูรายละเอียดคำอธิบายรายวิชา */}
-                                    <button 
-                                        onClick={() => openReasonModal(item)}
-                                        className="btn-info-icon"
-                                        title="คลิกเพื่อดูคำอธิบายรายวิชาเปรียบเทียบ"
-                                    >
-                                        ℹ️
-                                    </button>
-                                </div>
-                             ) : ( <span className="no-result">-ไม่พบผลการเปรียบเทียบ-</span> )}
-                          </td>
-                          <td className="score-cell">
                             {item.aicomparisonresult ? (
-                                <span style={{ 
-                                    color: item.aicomparisonresult.similarity_score > 0.8 ? 'green' : 
-                                           item.aicomparisonresult.similarity_score > 0.5 ? 'orange' : 'red' 
-                                }}>
-                                    {`${(item.aicomparisonresult.similarity_score * 100).toFixed(2)}%`}
-                                </span>
-                            ) : 'N/A'}
+                              <div className="fd-ai-suggestion">
+                                <div>
+                                  <strong>{item.aicomparisonresult.suggested_course.course_code}</strong><br/>
+                                  {item.aicomparisonresult.suggested_course.course_name_th}
+                                </div>
+
+                                <button 
+                                  className="fd-info-btn"
+                                  onClick={() => openReasonModal(item)}
+                                >
+                                  ℹ️
+                                </button>
+                              </div>
+                            ) : (
+                              <span className="fd-no-ai">-ไม่มีผลลัพธ์-</span>
+                            )}
                           </td>
+
+                          <td className="fd-score-cell">
+                            {item.aicomparisonresult ? (
+                              <span 
+                                className={`fd-score ${
+                                  item.aicomparisonresult.similarity_score > 0.8
+                                    ? "score-green"
+                                    : item.aicomparisonresult.similarity_score > 0.5
+                                    ? "score-yellow"
+                                    : "score-red"
+                                }`}
+                              >
+                                {(item.aicomparisonresult.similarity_score * 100).toFixed(2)}%
+                              </span>
+                            ) : "N/A"}
+                          </td>
+
                           <td>
-                            <select 
-                              value={item.status} 
-                              onChange={(e) => handleItemStatusChange(req.id, item.id, e.target.value)}
-                              className="status-select"
-                              style={{
-                                  borderColor: item.status === 'approved' ? 'green' : 
-                                               item.status === 'rejected' ? 'red' : '#ccc',
-                                  color: item.status === 'approved' ? 'green' : 
-                                         item.status === 'rejected' ? 'red' : 'black'
-                              }}
+                            <select
+                              value={item.status}
+                              onChange={(e) =>
+                                handleItemStatusChange(req.id, item.id, e.target.value)
+                              }
+                              className="fd-status-select"
                             >
                               <option value="pending">รอตรวจสอบ</option>
                               <option value="approved">อนุมัติ</option>
@@ -213,69 +259,75 @@ function FacultyDashboard() {
                     </tbody>
                   </table>
                 </div>
-                <div className="request-card-actions">
-                  <button onClick={() => handleSaveChanges(req)} className="btn btn-primary">บันทึกการเปลี่ยนแปลง</button>
+
+                {/* = Footer = */}
+                <div className="fd-request-footer">
+                  <button 
+                    className="fd-save-btn"
+                    onClick={() => handleSaveChanges(req)}
+                  >
+                    บันทึกการเปลี่ยนแปลง
+                  </button>
                 </div>
+
               </div>
             ))}
           </div>
         )}
       </main>
 
-      {/* --- Modal แสดงเปรียบเทียบคำอธิบายรายวิชา --- */}
+      {/* ===== MODAL ===== */}
       {showModal && modalContent && (
         <div className="modal-overlay">
-            <div className="modal-content">
-                <div className="modal-header">
-                    <h3>เปรียบเทียบคำอธิบายรายวิชา (Course Description)</h3>
-                    <span className="modal-score">
-                        ความสอดคล้อง: {(modalContent.score * 100).toFixed(2)}%
-                    </span>
-                </div>
-                
-                <div className="comparison-grid">
-                    {/* กล่องซ้าย: วิชาเดิม */}
-                    <div className="course-box original">
-                        <div className="box-header">
-                            <h4>{modalContent.original.course_code} (สถาบันเดิม)</h4>
-                            <span>{modalContent.original.course_name_th}</span>
-                        </div>
-                        <div className="box-body">
-                            {/* แสดงคำอธิบายพร้อมไฮไลท์ */}
-                            <HighlightedText 
-                                text={modalContent.original.course_description} 
-                                compareWith={modalContent.suggested.course_description} 
-                            />
-                        </div>
-                    </div>
+          <div className="modal-content glass-white">
 
-                    {/* กล่องขวา: วิชาเป้าหมาย */}
-                    <div className="course-box suggested">
-                        <div className="box-header">
-                            <h4>{modalContent.suggested.course_code} (เป้าหมาย)</h4>
-                            <span>{modalContent.suggested.course_name_th}</span>
-                        </div>
-                        <div className="box-body">
-                            {/* แสดงคำอธิบายพร้อมไฮไลท์ */}
-                            <HighlightedText 
-                                text={modalContent.suggested.course_description} 
-                                compareWith={modalContent.original.course_description} 
-                            />
-                        </div>
-                    </div>
-                </div>
-                
-                <div className="ai-reason-box">
-                    <h4>🤖 บทวิเคราะห์จาก AI:</h4>
-                    <p>{modalContent.reason}</p>
-                </div>
-
-                <div style={{textAlign: 'right', marginTop: '1.5rem'}}>
-                    <button onClick={() => setShowModal(false)} className="btn btn-secondary">ปิดหน้าต่าง</button>
-                </div>
+            <div className="modal-header">
+              <h3>เปรียบเทียบคำอธิบายรายวิชา</h3>
+              <span className="modal-score">
+                ความสอดคล้อง: {(modalContent.score * 100).toFixed(2)}%
+              </span>
             </div>
+
+            <div className="comparison-grid">
+              {/* เดิม */}
+              <div className="course-box">
+                <h4>{modalContent.original.course_code}</h4>
+                <p>{modalContent.original.course_name_th}</p>
+                <HighlightedText 
+                  text={modalContent.original.course_description}
+                  compareWith={modalContent.suggested.course_description}
+                />
+              </div>
+
+              {/* เป้าหมาย */}
+              <div className="course-box">
+                <h4>{modalContent.suggested.course_code}</h4>
+                <p>{modalContent.suggested.course_name_th}</p>
+                <HighlightedText 
+                  text={modalContent.suggested.course_description}
+                  compareWith={modalContent.original.course_description}
+                />
+              </div>
+            </div>
+
+            <div className="ai-reason-box">
+              <h4>🤖 บทวิเคราะห์จาก AI</h4>
+              <p>{modalContent.reason}</p>
+            </div>
+
+            <div className="modal-footer">
+              <button 
+                onClick={() => setShowModal(false)}
+                className="btn-close-modal"
+              >
+                ปิด
+              </button>
+            </div>
+
+          </div>
         </div>
       )}
+
     </div>
   );
 }
