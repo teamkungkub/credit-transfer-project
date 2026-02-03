@@ -320,7 +320,7 @@ class TransferEvaluationPDFView(APIView):
             html_string = render_to_string('transfer/transfer_evaluation_form.html', context)
             
             # --- ใช้ Custom URL Fetcher ---
-            # base_url ต้องชี้ไปที่ root ของเว็บ (เช่น http://127.0.0.1:8000/)
+            # base_url ต้องชี้ไปที่ root ของเว็บ (เช่น http://credit-transfer-project.onrender.com/)
             html = HTML(string=html_string, base_url=request.build_absolute_uri('/'), url_fetcher=django_url_fetcher)
             # ------------------------------
             
