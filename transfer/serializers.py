@@ -46,28 +46,53 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'student_id': {'validators': []}, 
         }
 
+# transfer/serializers.py
+
 class UserDetailSerializer(serializers.ModelSerializer):
-    profile = UserProfileSerializer(source='userprofile')
+    # ใช้ SerializerMethodField เหมือนเดิม (เพื่อกัน Error 500 เวลา User ไม่มี Profile)
+    profile = serializers.SerializerMethodField()
+    is_faculty = serializers.SerializerMethodField()
+    is_superuser = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'profile']
+        fields = ['username', 'first_name', 'last_name', 'email', 'profile', 'is_faculty', 'is_superuser'] 
 
+    def get_is_faculty(self, obj):
+        return hasattr(obj, 'facultyprofile')
+
+    def get_profile(self, obj):
+        try:
+            return UserProfileSerializer(obj.userprofile).data
+        except Exception:
+            return None
+
+    # 🔥 แก้ไขฟังก์ชัน update ให้รองรับการบันทึก Profile
     def update(self, instance, validated_data):
-        # ดึงข้อมูล profile ที่ส่งมาจาก frontend
-        profile_data = validated_data.pop('userprofile', {})
-
-        # อัปเดตข้อมูล User หลัก
+        # 1. อัปเดตข้อมูล User หลัก (ชื่อ, นามสกุล, อีเมล)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.email = validated_data.get('email', instance.email)
         instance.save()
         
-        # อัปเดตข้อมูลใน UserProfile ที่เชื่อมกัน
-        # ใช้ get_or_create เพื่อสร้าง profile หากยังไม่มี (ป้องกัน Error)
-        profile, created = UserProfile.objects.get_or_create(user=instance)
-        profile.student_id = profile_data.get('student_id', profile.student_id)
-        profile.major = profile_data.get('major', profile.major)
-        profile.save()
+        # 2. อัปเดตข้อมูล Profile (ดึงจากข้อมูลดิบ initial_data โดยตรง)
+        # เหตุผล: เพราะ field 'profile' ข้างบนเป็น Read-only เราเลยต้องมาดึงเองตรงนี้
+        profile_raw_data = self.initial_data.get('profile')
+        
+        # เช็คว่ามีข้อมูล profile ส่งมาไหม และต้องเป็น Dictionary
+        if profile_raw_data and isinstance(profile_raw_data, dict):
+            # สร้างหรือดึง Profile ของ User นี้มา
+            profile, created = UserProfile.objects.get_or_create(user=instance)
+            
+            # บันทึก Student ID
+            if 'student_id' in profile_raw_data:
+                profile.student_id = profile_raw_data['student_id']
+                
+            # บันทึก Major
+            if 'major' in profile_raw_data:
+                profile.major = profile_raw_data['major']
+                
+            profile.save()
         
         return instance
 
@@ -159,7 +184,7 @@ class RequestItemDetailSerializer(serializers.ModelSerializer):
     aicomparisonresult = AIComparisonResultSerializer(read_only=True)
     class Meta:
         model = RequestItem
-        fields = ['id', 'original_course', 'grade', 'aicomparisonresult']
+        # ลบบรรทัดซ้ำออก เหลืออันที่ครบถ้วนไว้
         fields = ['id', 'original_course', 'grade', 'status', 'aicomparisonresult']
 
 class TransferRequestListSerializer(serializers.ModelSerializer):

@@ -50,7 +50,7 @@ function FacultyHistoryPage() {
       <aside className="sidebar">
         <h2 className="sidebar-title">ระบบเทียบโอน</h2>
         <nav>
-          <Link to="/faculty/dashboard" className="sidebar-link">ย้อนกลับหน้าตรวจสอบ</Link>
+          <Link to="/faculty/" className="sidebar-link">ย้อนกลับหน้าตรวจสอบ</Link>
         </nav>
         <div className="sidebar-footer">
           <p className="staff-name">👋 {user?.username || "เจ้าหน้าที่"}</p>

@@ -2,285 +2,294 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="utf-8">
-    <title>แบบสรุปผลการเทียบโอน</title>
+<meta charset="utf-8">
+<title>แบบสรุปผลการเทียบโอน</title>
 
-    <style>
-        @font-face {
-            font-family: 'Sarabun';
-            font-style: normal;
-            font-weight: 300;
-            src: url('https://fonts.gstatic.com/s/sarabun/v14/DtVjJx26TKEr37c9YHZJmnYn.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'Sarabun';
-            font-style: normal;
-            font-weight: 500;
-            src: url('https://fonts.gstatic.com/s/sarabun/v14/DtVjJx26TKEr37c9YHZJmnYn.ttf') format('truetype');
-        }
-        body {
-            font-family: 'Sarabun', sans-serif;
-            font-size: 9px;
-            line-height: 1.3;
-        }
+<style>
+/* ===== FONT ===== */
+@font-face {
+    font-family: 'TH Sarabun New';
+    src: url('https://cdn.jsdelivr.net/gh/lazywasabi/thai-web-fonts/fonts/THSarabunNew/THSarabunNew.ttf') format('truetype');
+    font-weight: 400;
+}
+@font-face {
+    font-family: 'TH Sarabun New';
+    src: url('https://cdn.jsdelivr.net/gh/lazywasabi/thai-web-fonts/fonts/THSarabunNew/THSarabunNew-Bold.ttf') format('truetype');
+    font-weight: 700;
+}
 
-        @page { size: A4 portrait; margin: 1cm; }
+/* ===== BASE ===== */
+body {
+    font-family: 'TH Sarabun New', sans-serif;
+    font-size: 9px;
+    line-height: 1.35;
+}
 
-        /* -------- Header ---------- */
-        /* CSS สำหรับส่วนหัว (Header) */
+@page {
+    size: A4 portrait;
+    margin: 1cm;
+}
+
+/* ===== HEADER ===== */
 .header {
     width: 100%;
     position: relative;
-    height: 80px; /* กำหนดความสูงให้พอดีกับโลโก้ */
+    height: 80px;
     margin-bottom: 10px;
 }
-
 .header img {
-    width: 60px; /* ปรับขนาดโลโก้ให้พอดี (ประมาณ 60-70px) */
-    height: auto;
+    width: 60px;
     position: absolute;
     top: 0;
     left: 0;
 }
-
 .header-text {
-    padding-left: 75px; /* เว้นที่ว่างด้านซ้ายให้โลโก้ */
-    padding-top: 5px;   /* ดันข้อความลงมานิดหน่อยให้อยู่กึ่งกลางคู่กับรูป */
+    padding-left: 75px;
+    padding-top: 5px;
     line-height: 1.4;
 }
-
-.univ { 
-    font-size: 14px; 
-    font-weight: bold; 
+.univ {
+    font-size: 14px;
+    font-weight: 600;
+}
+.faculty {
+    font-size: 12px;
+    font-weight: 500;
 }
 
-.faculty { 
-    font-size: 12px; 
-    font-weight: bold; 
+.unit-cell {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 500;
+    line-height: 1.2;
+    border-left: none;
+    border-right: none;
+}
+/* ===== TITLE ===== */
+.title {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 10px 0 5px;
+}
+.sub-title {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 400;
 }
 
-        .title {
-            text-align: center;
-            font-size: 12px;
-            font-weight: normal;
-            margin: 10px 0 5px 0;
-        }
-        .sub-title {
-            text-align: center;
-            font-size: 10px;
-            font-weight: normal;
-        }
+/* ===== INFO ===== */
+.info-line {
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 400;
+}
 
-        .info-line {
-            margin-top: 8px;
-            font-size: 13px;
-        }
+/* ===== TABLE ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    font-weight: 400;
+     margin-top: 12px;
+}
+th, td {
+    border: 1px solid #000;
+    padding: 4px;
+}
+th {
+    text-align: center;
+    font-weight: 700;
+}
 
-        /* ------- Table --------- */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 11px;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 4px;
-        }
-        th {
-            text-align: center;
-            font-weight: bold;
-        }
+.sum-row td {
+    background: #fff7a8;
+    font-weight: 500;
+    text-align: center;
+}
 
-        .sum-row td {
-            background: #fff7a8;
-            font-weight: bold;
-            text-align: center;
-        }
+/* ===== FOOTER ===== */
+.footer {
+    margin-top: 20px;
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
 
-        /* ------- Footer & Signatures (แก้ไขใหม่) --------- */
-        .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            margin-bottom: 20px;
-        }
-
-        /* ตารางสำหรับจัด Layout ลายเซ็นแบบไม่มีเส้น */
-        .layout-table {
-            width: 100%;
-            border: none;
-            margin-top: 10px;
-        }
-        .layout-table td {
-            border: none;
-            vertical-align: top;
-            padding: 5px;
-        }
-        
-        /* สไตล์ลายเซ็น */
-        .sig-block {
-            margin-bottom: 15px;
-        }
-        .sig-line {
-            border-bottom: 1px dotted #000;
-            width: 200px;
-            display: inline-block;
-            margin-bottom: 5px;
-        }
-        .sig-label {
-            font-weight: bold;
-            margin-right: 5px;
-        }
-        .sig-name {
-            display: block;
-            margin-top: 2px;
-        }
-        .sig-role {
-            display: block;
-            font-size: 12px;
-        }
-
-    </style>
+/* ===== SIGNATURE ===== */
+.layout-table {
+    width: 100%;
+    border: none;
+    margin-top: 10px;
+}
+.layout-table td {
+    border: none;
+    vertical-align: top;
+    padding: 5px;
+}
+.sig-block {
+    margin-bottom: 8px;   
+    line-height: 1.4;     
+}
+.sig-line {
+    border-bottom: 1px dotted #000;
+    width: 200px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+.sig-label {
+    font-weight: 500;
+}
+.sig-name,
+.sig-role {
+    font-weight: 400;
+    font-size: 12px;
+}
+</style>
 </head>
+
 <body>
 
 <div class="header">
-    <img src="{% static 'images/logo.png' %}" class="header-logo" alt="logo">
-    
+    <img src="{% static 'images/logo.png' %}" alt="logo">
     <div class="header-text">
-        <div class="univ">มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตสกลนคร</div>
+        <div class="faculty">มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตสกลนคร</div>
         <div class="faculty">คณะอุตสาหกรรมและเทคโนโลยี</div>
     </div>
 </div>
 
 <div class="title">ตารางสรุปผลการเทียบความรู้และการใช้ประสบการณ์จากการศึกษาในระบบ (รายบุคคล)</div>
-<div class="sub-title">-------------------------</div>
+<div class="sub-title">______________________________</div>
 
 <div class="info-line">
-    สำหรับนักศึกษา ระบบ–นาย/นาง/นางสาว 
-    <span style="border-bottom: 1px dotted #000; padding: 0 10px; font-weight: bold;">
-        {{ request.student.first_name }} {{ request.student.last_name }}
-    </span> 
-    &nbsp;&nbsp; 
-    รหัสประจำตัวนักศึกษา 
-    <span style="border-bottom: 1px dotted #000; padding: 0 7px; font-weight: bold;">
-        {{ request.student.userprofile.student_id }}
+สำหรับนักศึกษา นาย/นาง/นางสาว
+<span style="border-bottom:1px dotted #000; padding:0 10px; font-weight:500;">
+{{ request.student.first_name }} {{ request.student.last_name }}
+</span>
+&nbsp;&nbsp;
+รหัสประจำตัวนักศึกษา
+<span style="border-bottom:1px dotted #000; padding:0 7px; font-weight:500;">
+{{ request.student.userprofile.student_id }}
+</span>
+</div>
+
+<div class="info-line">
+    สาขาวิชา
+    <span style="border-bottom:1px dotted #000; padding:0 7px; font-weight:500;">
+        {{ request.student.userprofile.major|default:"-" }}
+    </span>
+    &nbsp;&nbsp;
+    โปรแกรมวิชา
+    <span style="border-bottom:1px dotted #000; padding:0 7px; font-weight:500;">
+        {{ request.target_curriculum.name }}
+    </span>
+    &nbsp;&nbsp;
+    ภาค (ปกติ/สมทบ)
+    <span style="border-bottom:1px dotted #000; padding:0 7px;">
+      
+    </span>
+    &nbsp;&nbsp;
+    ชั้นปีที่
+    <span style="border-bottom:1px dotted #000; padding:0 7px;">
+        1
     </span>
 </div>
 
-<div class="info-line">
-    สาขาวิชา 
-    <span style="border-bottom: 1px dotted #000; padding: 0 7px; font-weight: bold;">
-        {{ request.student.userprofile.major|default:"-" }}
-    </span> 
-    &nbsp;&nbsp; 
-    โปรแกรมวิชา 
-    <span style="border-bottom: 1px dotted #000; padding: 0 7px; font-weight: bold;">
-        {{ request.target_curriculum.name }}
-    </span> 
-    &nbsp;&nbsp; 
-    ภาคปีที่ 
-    <span style="border-bottom: 1px dotted #000; padding: 0 7px;">..........</span>
-</div>
 
 <table>
-    <tr>
-        <th>ลำดับ</th>
-        <th>รหัสวิชา</th>
-        <th>ชื่อวิชาเทียบโอน</th>
-        <th>หน่วยกิต</th>
-        <th>เกรดที่ได้</th>
-        <th>สภาพวิชา</th>
-        <th>เทียบในภาคเรียนที่</th>
-    </tr>
+<tr>
+    <th>ลำดับ</th>
+    <th>รหัสวิชา</th>
+    <th>ชื่อวิชาเทียบโอน</th>
+    <th>หน่วยกิต</th>
+    <th>เกรดที่ได้</th>
+    <th>สภาพวิชา</th>
+    <th>เทียบในภาคเรียนที่</th>
+</tr>
 
-    {% for item in items %}
-    <tr>
-        <td style="text-align:center;">{{ forloop.counter }}</td>
-        <td style="text-align:center;">{{ item.original_course.course_code }}</td>
-        <td>{{ item.original_course.course_name_th }}</td>
-        <td style="text-align:center;">{{ item.original_course.credits }}</td>
-        <td style="text-align:center;">{{ item.grade }}</td>
-        <td style="text-align:center;">1.{{ forloop.counter }}</td>
-        <td style="text-align:center;">ภาคเรียนที่ 1</td>
-    </tr>
-    {% endfor %}
+{% for item in items %}
+<tr>
+    <td style="text-align:center;">{{ forloop.counter }}</td>
+    <td style="text-align:center;">{{ item.original_course.course_code }}</td>
+    <td>{{ item.original_course.course_name_th }}</td>
+    <td style="text-align:center;">{{ item.original_course.credits }}</td>
+    <td style="text-align:center;">{{ item.grade }}</td>
+    <td style="text-align:center;">1.{{ forloop.counter }}</td>
+    <td style="text-align:center;">ภาคเรียนที่ 1</td>
+</tr>
+{% endfor %}
 
-    {% for i in "12345" %}
-    <tr>
-        <td style="height:18px;"></td><td></td><td></td><td></td><td></td><td></td><td></td>
-    </tr>
-    {% endfor %}
+{% for i in "12345" %}
+<tr>
+    <td style="height:18px;"></td><td></td><td></td><td></td><td></td><td></td><td></td>
+</tr>
+{% endfor %}
 
-    <tr class="sum-row">
-        <td colspan="3">รวมเทียบโอน</td>
-        <td>{{ total_credits }}</td>
-        <td colspan="3"></td>
-    </tr>
+<tr class="sum-row">
+    <td colspan="3">รวมเทียบโอน</td>
+    <td>{{ total_credits }}</td>
+    <td class="unit-cell">หน่วยกิต</td>
+    <td colspan="3"></td>
+</tr>
 </table>
 
-<div class="footer">
-    <strong>หมายเหตุ:</strong>  
-    1. ผลการประเมินให้ใส่ ✓ ผ่าน และ x ไม่ผ่าน  
-    2. รายละเอียดสภาพวิชาให้กรอกตามหมวดหมู่ที่ใช้ประเมิน  
-</div>
+
 
 <table class="layout-table">
-    <tr>
-        <td style="width: 50%;">
-            <div class="sig-block">
-                <span class="sig-label">ลงชื่อ</span> <span class="sig-line"></span><br>
-                (.......................................................)
-            </div>
-        </td>
-        <td style="width: 50%;"></td> </tr>
 
-    <tr>
-        <td style="width: 55%;">
-            <div class="sig-block">
-                <span class="sig-label">คณะกรรมการพิจารณาเทียบโอนผลการเรียน (ลำดับที่ 1)</span><br>
-                <div style="margin-top: 10px;">
-                    <span class="sig-label">ลงชื่อ</span> <span class="sig-line"></span><br>
-                    (.......................................................)
-                </div>
-            </div>
-        </td>
-        <td style="width: 45%; text-align: center;">
-            <div class="sig-block">
-                <span class="sig-label">ลงชื่อ</span> <span class="sig-line"></span><br>
-                <span class="sig-name">ผู้ช่วยศาสตราจารย์พรเทพ ปัญญาแก้ว</span>
-                <span class="sig-role">รองคณบดีฝ่ายวิชาการและวิจัย</span>
-            </div>
-        </td>
-    </tr>
+<tr>
+<td style="width:50%;">
+<div class="sig-block">
+    <span class="sig-label">ลงชื่อ</span>...........................................<br>
+    (ว่าที่ร้อยตรีกฤษฎา บุญมีวิเศษ)<br>
+    <span class="sig-label">คณะกรรมการพิจารณาเทียบโอนผลการเรียน (ลำดับที่ 1)</span>
+</div>
+</td>
+</tr>
 
-    <tr>
-        <td>
-            <div class="sig-block">
-                <span class="sig-label">คณะกรรมการพิจารณาเทียบโอนผลการเรียน (ลำดับที่ 2)</span><br>
-                <div style="margin-top: 10px;">
-                    <span class="sig-label">ลงชื่อ</span> <span class="sig-line"></span><br>
-                    (.......................................................)
-                </div>
-            </div>
-        </td>
-        <td style="text-align: center;">
-            <div class="sig-block">
-                <span class="sig-label">ลงชื่อ</span> <span class="sig-line"></span><br>
-                <span class="sig-name">(ผู้ช่วยศาสตราจารย์สุริยา แก้วอาษา)</span>
-                <span class="sig-role">คณบดีคณะอุตสาหกรรมและเทคโนโลยี</span>
-            </div>
-        </td>
-    </tr>
+<tr>
+<td>
+<div class="sig-block">
+    <span class="sig-label"> ลงชื่อ</span>...........................................<br>
+    (นายนราวิทย์ กิจเจริญ)<br>
+    <span class="sig-label">คณะกรรมการพิจารณาเทียบโอนผลการเรียน (ลำดับที่ 2)</span>
+</div>
+</td>
+<td style="text-align:center;">
+<div class="sig-block">
+<span class="sig-label"> ลงชื่อ</span>...........................................<br>
+<span class="sig-name">(ผู้ช่วยศาสตราจารย์พรเทพ ปัญญาแก้ว)</span><br>
+<span class="sig-role">รองคณบดีฝ่ายวิชาการและวิจัย</span>
+</div>
+</td>
+</tr>
 
-    <tr>
-        <td>
-            <div class="sig-block">
-                <span class="sig-label">คณะกรรมการพิจารณาเทียบโอนผลการเรียน (ลำดับที่ 3)</span>
-                </div>
-        </td>
-        <td></td>
-    </tr>
+<tr>
+<td>
+<div class="sig-block">
+    <span class="sig-label"> ลงชื่อ</span>...........................................<br>
+    (นายอัษฎาวุธ เพชรพรรณ)<br>
+    <span class="sig-label">คณะกรรมการพิจารณาเทียบโอนผลการเรียน (ลำดับที่ 3)</span>
+</div>
+</td>
+<td style="text-align:center;">
+<div class="sig-block">
+<span class="sig-label">ลงชื่อ</span>...........................................<br>
+<span class="sig-name">(ผู้ช่วยศาสตราจารย์สุริยา แก้วอาษา)</span><br>
+<span class="sig-role">คณบดีคณะอุตสาหกรรมและเทคโนโลยี</span>
+</div>
+</td>
+</tr>
+
+<tr>
+<td>
+
+</td>
+<td></td>
+</tr>
+
 </table>
+
 
 </body>
 </html>

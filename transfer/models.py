@@ -1,6 +1,9 @@
 # transfer/models.py
+
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # --- ส่วนข้อมูลเป้าหมาย (ที่เราจะเทียบโอนเข้า) ---
 
@@ -34,7 +37,6 @@ class TargetCourse(models.Model):
 
 class Institution(models.Model):
     name = models.CharField("ชื่อสถาบัน", max_length=255)
-    # เพิ่ม is_home_institution เพื่อแยกสถาบันเราออกจากสถาบันอื่น
     is_home_institution = models.BooleanField("เป็นสถาบันหลัก (สำหรับหลักสูตรเป้าหมาย)", default=False)
 
     class Meta:
@@ -63,10 +65,17 @@ class SourceCourse(models.Model):
 # --- ส่วนของคำร้อง ---
 
 class TransferRequest(models.Model):
-    STATUS_CHOICES = [('pending', 'รอตรวจสอบ'), ('approved', 'อนุมัติแล้ว'), ('rejected', 'ปฏิเสธ')]
+    # อัปเกรด: เพิ่มสถานะ 'partially_approved' (อนุมัติบางส่วน)
+    STATUS_CHOICES = [
+        ('pending', 'รอตรวจสอบ'), 
+        ('approved', 'อนุมัติแล้ว'), 
+        ('partially_approved', 'อนุมัติบางส่วน'),
+        ('rejected', 'ปฏิเสธ')
+    ]
     student = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="นักศึกษา")
-    status = models.CharField("สถานะ", max_length=10, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField("สถานะ", max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField("วันที่ยื่นคำร้อง", auto_now_add=True)
+    updated_at = models.DateTimeField("แก้ไขล่าสุด", auto_now=True) # เพิ่ม field นี้เพื่อให้รู้ว่ามีการอัปเดตเมื่อไหร่
     target_curriculum = models.ForeignKey(Curriculum, on_delete=models.SET_NULL, null=True, verbose_name="หลักสูตรเป้าหมาย")
     is_viewed_by_student = models.BooleanField(default=False)
 
@@ -96,17 +105,35 @@ class RequestItem(models.Model):
     def __str__(self):
         return f"{self.original_course.course_code} for request {self.transfer_request.id}"
 
-    # --- เพิ่มฟังก์ชัน save อัตโนมัติ ---
+    # --- ฟังก์ชัน save อัตโนมัติ (ฉลาดขึ้น) ---
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        items = self.transfer_request.requestitem_set.all()
-        item_statuses = {item.status for item in items}
         
-        if 'pending' not in item_statuses:
-            if 'rejected' in item_statuses:
-                self.transfer_request.status = 'rejected'
-            else:
-                self.transfer_request.status = 'approved'
+        # ตรวจสอบรายการทั้งหมดในคำร้องนี้
+        items = self.transfer_request.requestitem_set.all()
+        if not items:
+            return
+
+        # นับจำนวนสถานะต่างๆ
+        total = len(items)
+        approved_count = sum(1 for item in items if item.status == 'approved')
+        rejected_count = sum(1 for item in items if item.status == 'rejected')
+        pending_count = sum(1 for item in items if item.status == 'pending')
+
+        new_status = 'pending'
+
+        if pending_count > 0:
+            new_status = 'pending' # ถ้ามีอันไหนรอตรวจ สถานะรวมต้องรอ
+        elif approved_count == total:
+            new_status = 'approved' # ผ่านหมด
+        elif rejected_count == total:
+            new_status = 'rejected' # ตกหมด
+        else:
+            new_status = 'partially_approved' # ผ่านบ้าง ตกบ้าง
+
+        # อัปเดตสถานะคำร้องแม่
+        if self.transfer_request.status != new_status:
+            self.transfer_request.status = new_status
             self.transfer_request.save()
 
 class AIComparisonResult(models.Model):
@@ -125,7 +152,7 @@ class AIComparisonResult(models.Model):
         score_percent = round(self.similarity_score * 100, 2)
         return f"Match: '{self.request_item.original_course}' -> '{self.suggested_course}' ({score_percent}%)"
 
-# --- ส่วนของโปรไฟล์ผู้ใช้ ---
+# --- ส่วนของโปรไฟล์ผู้ใช้ (Legacy) ---
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -133,8 +160,53 @@ class UserProfile(models.Model):
     major = models.CharField("สาขาวิชา", max_length=255, null=True, blank=True)
 
     class Meta:
-        verbose_name = "โปรไฟล์ผู้ใช้"
-        verbose_name_plural = "5. โปรไฟล์ผู้ใช้"
+        verbose_name = "โปรไฟล์ผู้ใช้ (เก่า)"
+        verbose_name_plural = "5. โปรไฟล์ผู้ใช้ (เก่า)"
 
     def __str__(self):
         return self.user.username
+
+# ==========================================
+#  🔥 ส่วนที่เพิ่มใหม่: Model จัดการบทบาท
+# ==========================================
+
+class FacultyProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='facultyprofile')
+    
+    class Meta:
+        verbose_name = "ข้อมูลอาจารย์"
+        verbose_name_plural = "6. ข้อมูลอาจารย์"
+
+    def __str__(self):
+        return f"อาจารย์ {self.user.first_name}"
+
+class StudentProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='studentprofile')
+    student_id = models.CharField(max_length=20, verbose_name="รหัสนักศึกษา", blank=True)
+    major = models.CharField(max_length=100, verbose_name="สาขาวิชา", blank=True)
+    
+    class Meta:
+        verbose_name = "ข้อมูลนักศึกษา"
+        verbose_name_plural = "7. ข้อมูลนักศึกษา"
+    
+    def __str__(self):
+        return f"{self.student_id} {self.user.first_name}"
+
+# ==========================================
+#  🔥 Signal: จัดการสิทธิ์อัตโนมัติ (สำคัญ!)
+# ==========================================
+@receiver(post_save, sender=User)
+def auto_manage_user_role(sender, instance, created, **kwargs):
+    """
+    ทำงานเมื่อกด Save User ในหน้า Admin:
+    - ถ้าเป็น Superuser/Staff -> สร้าง FacultyProfile, ลบ StudentProfile
+    - ถ้าเป็น User ธรรมดา -> สร้าง StudentProfile, ลบ FacultyProfile
+    """
+    if instance.is_staff or instance.is_superuser:
+        # เป็นอาจารย์ หรือ Admin
+        FacultyProfile.objects.get_or_create(user=instance)
+        StudentProfile.objects.filter(user=instance).delete()
+    else:
+        # เป็นนักศึกษา
+        FacultyProfile.objects.filter(user=instance).delete()
+        StudentProfile.objects.get_or_create(user=instance)

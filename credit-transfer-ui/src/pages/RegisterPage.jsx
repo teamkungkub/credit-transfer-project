@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { register } from '../services/api';
-
+import './RegisterPage.css';
 function RegisterPage() {
   const [formData, setFormData] = useState({
     username: '',

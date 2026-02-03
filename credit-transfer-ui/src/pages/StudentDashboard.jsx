@@ -12,6 +12,7 @@ import AuthContext from '../context/AuthContext';
 import './StudentDashboard.css';
 
 function StudentDashboard() {
+  const [isSuccess, setIsSuccess] = useState(false);
   const { user, logoutUser } = useContext(AuthContext);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,6 +33,9 @@ function StudentDashboard() {
   const [isEditing, setIsEditing] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  // ✅ 1. กำหนดเกรดที่ให้เลือกได้ (เพิ่ม B+, C+ ได้ที่นี่ถ้าต้องการ)
+  const VALID_GRADES = ['A', ,'B+','B',,'C+', 'C', , ];
 
   // 🔍 ฟิลเตอร์วิชา
   const filteredCourses = courses.filter(course =>
@@ -85,12 +89,22 @@ function StudentDashboard() {
     });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => { 
+    e.preventDefault(); 
+
+    // 1. เช็คไฟล์ก่อนเป็นอันดับแรก!
+    if (!evidenceFile) {
+        alert("กรุณาแนบไฟล์หลักฐานก่อนส่งคำร้อง");
+        return; 
+    }
+
+    // 2. เช็คหลักสูตร
     if (!selectedTargetCurriculum) {
       alert('กรุณาเลือกหลักสูตรที่ต้องการเทียบโอน');
       return;
     }
 
+    // เตรียมข้อมูลรายวิชา
     const items = Object.keys(selectedCourses).map(id => ({
       original_course: parseInt(id),
       grade: selectedCourses[id].grade || '',
@@ -101,23 +115,39 @@ function StudentDashboard() {
       return;
     }
 
+    // 🔥 เช็คว่ามีวิชาไหนลืมกรอกเกรดหรือไม่?
+    const incompleteItems = items.filter(item => !item.grade); 
+    if (incompleteItems.length > 0) {
+        alert(`กรุณากรอกเกรดให้ครบทุกวิชา (ยังขาดอยู่ ${incompleteItems.length} วิชา)`);
+        return; 
+    }
+
+    // --- ส่วนส่งข้อมูล ---
     try {
       setIsLoading(true);
+      
+      // ส่งข้อมูลเข้า API
       await submitTransferRequest(items, selectedTargetCurriculum, evidenceFile);
+      
+      // ✅ 1. แจ้งเตือนแบบ Alert (แทนการเปลี่ยนหน้า)
       alert('ส่งคำร้องสำเร็จ!');
 
-      setSelectedTargetCurriculum('');
-      setSelectedInstitution('');
-      setCourses([]);
+      // ✅ 2. ล้างค่าในฟอร์มให้กลับมาว่าง พร้อมกรอกใหม่
+      setEvidenceFile(null); 
       setSelectedCourses({});
+      setCourses([]);
+      setSelectedTargetCurriculum(''); // (เลือกใส่หรือไม่ก็ได้) ล้างหลักสูตรที่เลือก
+      setSelectedInstitution('');    // (เลือกใส่หรือไม่ก็ได้) ล้างสถาบันที่เลือก
+
+      // ❌ เอา setIsSuccess ออกแล้ว
+
     } catch (error) {
       console.error(error);
-      alert('เกิดข้อผิดพลาดในการส่งคำร้อง');
+      alert('เกิดข้อผิดพลาดในการส่งคำร้อง: ' + (error.response?.data?.detail || error.message));
     } finally {
       setIsLoading(false);
     }
   };
-
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
 
@@ -142,7 +172,7 @@ function StudentDashboard() {
       setIsEditing(false);
     } catch (err) {
       console.error(err);
-      alert('เกิดข้อผิดพลาด');
+      alert('รหัสนักศึกษานี้มีผู้ใช้แล้ว');
     }
   };
 
@@ -272,12 +302,19 @@ function StudentDashboard() {
                       <td>{course.course_name_th}</td>
                       <td>{course.credits}</td>
                       <td>
-                        <input type="text"
+                        {/* ✅ 2. เปลี่ยน Input เป็น Dropdown (Select) */}
+                        <select
                           disabled={!selectedCourses[course.id]}
                           value={selectedCourses[course.id]?.grade || ''}
                           onChange={e => handleCourseChange(course.id, 'grade', e.target.value)}
                           className="grade-input"
-                        />
+                          style={{ padding: '8px', borderRadius: '4px' }}
+                        >
+                          <option value="">-- เลือก --</option>
+                          {VALID_GRADES.map(grade => (
+                            <option key={grade} value={grade}>{grade}</option>
+                          ))}
+                        </select>
                       </td>
                     </tr>
                   ))}
@@ -285,13 +322,20 @@ function StudentDashboard() {
               </table>
 
               {/* FILE UPLOAD */}
-              <div className="upload-block">
-                <label>แนบหลักฐาน (ถ้ามี)</label>
-                <input type="file" accept="image/*" onChange={(e) => setEvidenceFile(e.target.files[0])} />
-              </div>
+<div className="upload-block">
+  <label>
+    แนบหลักฐาน <span style={{ color: 'red' }}>* (จำเป็นต้องแนบ)</span>
+  </label>
+  <input 
+    type="file" 
+    accept="image/*" 
+    onChange={(e) => setEvidenceFile(e.target.files[0])} 
+    required  // (ทางเลือก) เพิ่ม attribute นี้เพื่อให้ Browser ช่วยเตือน
+  />
+</div>
 
               <button className="submit-btn" onClick={handleSubmit} disabled={isLoading}>
-                {isLoading ? "กำลังส่ง..." : "ส่งคำร้อง"}
+                {isLoading ? "ส่งข้อมูลสำเร็จ ระบบกำลังทำการประมวลผลด้วย AI..." : "ส่งคำร้อง"}
               </button>
             </div>
           )}

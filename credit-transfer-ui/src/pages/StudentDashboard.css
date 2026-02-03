@@ -22,6 +22,10 @@ body {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(12px);
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  
+  /* --- เพิ่มส่วนนี้ เพื่อให้ Header ลอยอยู่ชั้นบนสุดเสมอ --- */
+  position: relative; 
+  z-index: 1000;
 }
 
 .dashboard-header {
@@ -90,6 +94,9 @@ body {
   padding: 15px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   animation: fadeIn 0.2s ease;
+
+  /* --- แก้ไข: เพิ่ม z-index สูงๆ เพื่อไม่ให้โดนบัง --- */
+  z-index: 9999; 
 }
 
 .notification-item {
@@ -116,6 +123,10 @@ body {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 25px;
+  
+  /* --- เพิ่ม z-index ต่ำกว่า dropdown เพื่อความชัวร์ --- */
+  position: relative;
+  z-index: 1;
 }
 
 /* ---------------------------------------------------
@@ -201,6 +212,8 @@ body {
   background: white;
   border-radius: 15px;
   overflow: hidden;
+  /* เพิ่ม table-layout ให้ขนาดเป๊ะขึ้น */
+  table-layout: fixed; 
 }
 
 .premium-table th {
@@ -211,7 +224,19 @@ body {
 
 .premium-table td {
   padding: 10px;
+  /* ป้องกันข้อความทะลุตาราง */
+  word-wrap: break-word; 
 }
+
+/* !!!!!!! จุดสำคัญที่เพิ่มเข้ามา !!!!!!! */
+/* กำหนดความกว้างเฉพาะคอลัมน์ที่ 2 (ซึ่งคือช่องรหัสวิชา) */
+.premium-table th:nth-child(2),
+.premium-table td:nth-child(2) {
+  min-width: 200px;    /* <--- ปรับเลขตรงนี้ถ้าอยากได้กว้างกว่านี้ */
+  width: 200px; 
+  white-space: nowrap; /* สั่งห้ามตัดบรรทัด */
+}
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 
 .premium-table tr:hover {
   background: #e3f2fd;
@@ -256,9 +281,39 @@ body {
 }
 
 .grade-input {
-width: 30px;
-padding: 4px 6px;
-font-size: 5px;
-text-align: center;
-border-radius: 8px;
+  width: 30px;
+  padding: 4px 6px;
+  /* --- แก้ไข: เปลี่ยนจาก 5px เป็น 14px เพื่อให้อ่านออก --- */
+  font-size: 14px; 
+  text-align: left;
+  border-radius: 8px;
+}
+
+.premium-table th:nth-child(1),
+.premium-table td:nth-child(1) {
+  width: 40px;
+  min-width: 40px;
+  text-align: center;
+}
+.premium-table th:nth-child(2),
+.premium-table td:nth-child(2) {
+  min-width: 140px;
+  width: 140px;
+  white-space: nowrap;
+}
+.premium-table th {
+  text-align: center;
+  vertical-align: middle;
+}
+.premium-table th:nth-child(2),
+.premium-table th:nth-child(3),
+.premium-table td:nth-child(3) {
+  width: 22%;
+}
+.premium-table th:nth-child(4),
+.premium-table td:nth-child(4) {
+  text-align: center;
+}
+.premium-table th:nth-child(5) {
+  text-align: center;
 }

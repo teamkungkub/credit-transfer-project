@@ -1,0 +1,177 @@
+/* ================================
+   GLOBAL RESET & FONT
+================================ */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Sarabun', 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #e8f0ff, #f6f9ff);
+}
+
+/* ================================
+   PAGE LAYOUT
+================================ */
+.login-container {
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center; /* กลางแนวนอน */
+  align-items: center;     /* กลางแนวตั้ง */
+
+  background: linear-gradient(135deg, #eef3ff, #f7f9ff);
+}
+
+/* ================================
+   FORM CARD
+================================ */
+.login-form {
+  width: 100%;
+  max-width: 460px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 42px 36px;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.05);
+  animation: fadeUp 0.6s ease;
+}
+
+/* ================================
+   TITLE
+================================ */
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 28px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* ================================
+   INPUT GROUP
+================================ */
+.input-group {
+  margin-bottom: 22px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 15px;
+  border-radius: 12px;
+  border: 1.5px solid #cbd5e1;
+  background-color: #f8fafc;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.input-group input::placeholder {
+  color: #94a3b8;
+}
+
+.input-group input:focus {
+  background-color: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+/* ================================
+   BUTTON
+================================ */
+.login-button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.35);
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.45);
+}
+
+.login-button:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 16px rgba(37, 99, 235, 0.35);
+}
+
+/* ================================
+   LINK TEXT
+================================ */
+.login-form p {
+  font-size: 14px;
+  color: #475569;
+}
+
+.login-form a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.login-form a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* ================================
+   ERROR MESSAGE
+================================ */
+.login-form p[style*="color: red"] {
+  background: #fee2e2;
+  color: #b91c1c !important;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+/* ================================
+   ANIMATION
+================================ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================
+   RESPONSIVE (DESKTOP-FIRST)
+================================ */
+@media (max-width: 768px) {
+  .login-form {
+    padding: 32px 24px;
+    border-radius: 16px;
+  }
+
+  .login-form h2 {
+    font-size: 22px;
+  }
+}

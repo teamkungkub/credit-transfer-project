@@ -238,8 +238,8 @@ class TransferReportPDFView(APIView):
             approved_items = transfer_request.requestitem_set.filter(status='approved')
             
             total_credits = approved_items.aggregate(
-                Sum('aicomparisonresult__suggested_course__credits')
-            )['aicomparisonresult__suggested_course__credits__sum'] or 0
+    Sum('original_course__credits')
+)['original_course__credits__sum'] or 0
 
             context = {
                 'request': transfer_request,
@@ -364,3 +364,4 @@ class TargetCourseViewSet(viewsets.ModelViewSet):
     # หมายเหตุ: ถ้าคุณแยก TargetCourseSerializer ก็ให้ใช้ตัวนั้น
     # แต่ถ้าโครงสร้างเหมือนกันใช้ SourceCourseSerializer แก้ขัดได้ หรือสร้างใหม่ดีกว่า
     permission_classes = [permissions.IsAuthenticated]
+

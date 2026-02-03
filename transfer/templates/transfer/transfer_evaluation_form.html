@@ -1,231 +1,264 @@
-{% load static %} <!DOCTYPE html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="utf-8">
-    <title>แบบประเมินผลการเทียบโอน</title>
-    <style>
-        @font-face {
-            font-family: 'Sarabun';
-            font-style: normal;
-            font-weight: 400;
-            src: url('https://fonts.gstatic.com/s/sarabun/v14/DtVjJx26TKEr37c9YHZJmnYn.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'Sarabun';
-            font-style: normal;
-            font-weight: 700;
-            src: url('https://fonts.gstatic.com/s/sarabun/v14/DtVjJx26TKEr37c9YHZJmnYn.ttf') format('truetype');
-        }
+<meta charset="utf-8">
+<title>แบบประเมินผลการเทียบโอนผลการเรียน</title>
 
-        body {
-            font-family: 'Sarabun', sans-serif;
-            font-size: 11px; /* ขนาดตัวอักษรพอดีกับ A4 แนวนอน */
-            line-height: 1.2;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+@font-face {
+    font-family: 'Sarabun';
+    src: url('https://fonts.gstatic.com/s/sarabun/v14/DtVjJx26TKEr37c9YHZJmnYn.ttf') format('truetype');
+}
 
-        @page {
-            size: A4 landscape;
-            margin: 1cm 0.5cm;
-        }
+/* ===== GLOBAL ===== */
+body {
+    font-family: 'Sarabun', sans-serif;
+    font-size: 9.3px;
+    line-height: 1.15;
+    margin: 0;
+}
 
-        /* --- Header --- */
-        .header-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            padding-left: 20px;
-        }
-        .header-logo {
-            width: 60px;
-            height: auto;
-            margin-right: 15px;
-            vertical-align: middle;
-        }
-        .header-text {
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .univ-name { font-size: 14px; font-weight: bold; }
-        .faculty-name { font-size: 12px; font-weight: bold; margin-top: 2px; }
-        
-        .doc-title {
-            text-align: center;
-            font-weight: bold;
-            font-size: 14px;
-            margin: 10px 0 15px 0;
-        }
+@page {
+    size: A4 landscape;
+    margin: 0.6cm 0.5cm;
+}
 
-        /* --- Table --- */
-        table {
-            width: 99%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
+/* ===== HEADER ===== */
+.header-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.header-logo {
+    width: 44px;
+    margin-right: 8px;
+}
+.univ-name {
+    font-size: 11px;
+    font-weight: bold;
+}
+.faculty-name {
+    font-size: 9.5px;
+    font-weight: bold;
+}
+.doc-title {
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: bold;
+    margin: 5px 0 7px;
+}
 
-        th, td {
-            border: 0.5pt solid #000;
-            padding: 4px 2px;
-            vertical-align: middle;
-            overflow: hidden;
-            word-wrap: break-word;
-        }
+/* ===== TABLE ===== */
+table {
+    width: 99%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 9.3px;
+}
 
-        th {
-            text-align: center;
-            font-weight: bold;
-            background-color: #ffffff;
-            height: 30px;
-        }
+th, td {
+    border: 0.5pt solid #000;
+    padding: 1.4px 1.8px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 1.15;
+}
 
-        /* --- Column Widths --- */
-        col.c1 { width: 3%; }
-        col.c2 { width: 8%; }
-        col.c3 { width: 20%; }
-        col.c4 { width: 4%; }
-        col.c5 { width: 3%; }
+th {
+    font-weight: bold;
+}
 
-        col.c6 { width: 3%; }
-        col.c7 { width: 8%; }
-        col.c8 { width: 16%; }
-        col.c9 { width: 5%; }
-        col.c10 { width: 5%; }
+tbody tr {
+    height: 18px;
+    page-break-inside: avoid;
+}
 
-        col.c11 { width: 8%; }
-        col.c12 { width: 5%; }
-        col.c13 { width: 8%; }
-        col.c14 { width: 6%; }
+/* ===== COLUMN WIDTH ===== */
+col.c1  { width: 3%; }
+col.c2  { width: 9%; }
+col.c3  { width: 19%; }
+col.c4  { width: 4%; }
+col.c5  { width: 4%; }
 
-        /* --- Helpers --- */
-        .text-center { text-align: center; }
-        .text-left { text-align: left; }
-        .category-row td {
-            font-weight: bold;
-            background-color: #f9f9f9;
-            text-align: left;
-            padding-left: 10px;
-        }
-    </style>
+col.c6  { width: 3%; }
+col.c7  { width: 9%; }
+col.c8  { width: 16%; }
+col.c9  { width: 4%; }
+col.c10 { width: 4%; }
+
+col.c11 { width: 10%; }
+col.c12 { width: 4%; }
+col.c13 { width: 4%; }
+col.c14 { width: 9%; }
+
+th:last-child,
+td:last-child {
+    min-width: 70px;
+}
+
+/* ===== HELPERS ===== */
+.text-left {
+    text-align: left;
+    padding-left: 4px;
+}
+
+.course-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.category-row td {
+    font-weight: bold;
+    background: #f2f2f2;
+    text-align: left;
+    padding-left: 6px;
+}
+</style>
 </head>
+
 <body>
 
-    <div class="header-container">
-        <img src="{% static 'images/logo.png' %}" class="header-logo" alt="logo">
-        
-        <div class="header-text">
-            <div class="univ-name">มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตสกลนคร</div>
-            <div class="faculty-name">คณะอุตสาหกรรมและเทคโนโลยี</div>
-        </div>
+<!-- ===== HEADER ===== -->
+<div class="header-container">
+    <img src="{% static 'images/logo.png' %}" class="header-logo">
+    <div>
+        <div class="univ-name">มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตสกลนคร</div>
+        <div class="faculty-name">คณะอุตสาหกรรมและเทคโนโลยี</div>
     </div>
-    
-    <div class="doc-title">แบบประเมินผลการเทียบโอนผลการเรียน</div>
+</div>
 
-    <table>
-        <colgroup>
-            <col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5">
-            <col class="c6"><col class="c7"><col class="c8"><col class="c9"><col class="c10">
-            <col class="c11"><col class="c12"><col class="c13"><col class="c14">
-        </colgroup>
+<div class="doc-title">แบบประเมินผลการเทียบโอนผลการเรียน</div>
 
-        <thead>
-            <tr>
-                <th colspan="5">รายวิชาที่นำมาเทียบโอน</th>
-                <th colspan="5">รายวิชาที่เทียบโอนในหลักสูตร</th>
-                <th colspan="4">ผลการพิจารณาเทียบโอน</th>
-            </tr>
-            <tr>
-                <th rowspan="2">ที่</th> <th rowspan="2">รหัสรายวิชา</th> <th rowspan="2">ชื่อวิชา</th> <th rowspan="2">หน่วย<br>กิต</th> <th rowspan="2">เกรด</th>
-                <th rowspan="2">ที่</th> <th rowspan="2">รหัสรายวิชา</th> <th rowspan="2">ชื่อวิชา</th> <th rowspan="2">หน่วย<br>กิต</th> <th rowspan="2">สภาพ<br>วิชา</th>
-                <th rowspan="2">ผ่านตามเกณฑ์<br>การเทียบโอน<br>(ระบุเกรด)</th> <th colspan="2">ทดสอบความรู้</th> <th rowspan="2">หมายเหตุ</th>
-            </tr>
-            <tr>
-                <th>คะแนน</th> <th>ผลการประเมิน</th>
-            </tr>
-        </thead>
+<!-- ===== TABLE ===== -->
+<table>
+<colgroup>
+    <col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5">
+    <col class="c6"><col class="c7"><col class="c8"><col class="c9"><col class="c10">
+    <col class="c11"><col class="c12"><col class="c13"><col class="c14">
+</colgroup>
 
-        <tbody>
-            <tr class="category-row">
-                <td colspan="14">หมวดศึกษาทั่วไป</td>
-            </tr>
+<thead>
+<tr>
+    <th colspan="5">รายวิชาที่นำมาเทียบโอน</th>
+    <th colspan="5">รายวิชาที่เทียบโอนในหลักสูตร</th>
+    <th colspan="4">ผลการพิจารณาเทียบโอน</th>
+</tr>
+<tr>
+    <th rowspan="2">ที่</th>
+    <th rowspan="2">รหัสรายวิชา</th>
+    <th rowspan="2">ชื่อวิชา</th>
+    <th rowspan="2">หน่วย
+        กิต</th>
+    <th rowspan="2">เกรด</th>
 
-            {% for item in items %}
-            <tr>
-                <td class="text-center">{{ forloop.counter }}</td>
-                <td class="text-center">{{ item.original_course.course_code }}</td>
-                <td class="text-left">{{ item.original_course.course_name_th }}</td>
-                <td class="text-center">{{ item.original_course.credits }}</td>
-                <td class="text-center">{{ item.grade }}</td>
+    <th rowspan="2">ที่</th>
+    <th rowspan="2">รหัสรายวิชา</th>
+    <th rowspan="2">ชื่อรายวิชา</th>
+    <th rowspan="2">หน่วย
+        กิต</th>
+    <th rowspan="2">สภาพ
+        วิชา</th>
 
-                <td class="text-center">{{ forloop.counter }}</td>
-                <td class="text-center">{{ item.aicomparisonresult.suggested_course.course_code }}</td>
-                <td class="text-left">{{ item.aicomparisonresult.suggested_course.course_name_th }}</td>
-                <td class="text-center">{{ item.aicomparisonresult.suggested_course.credits }}</td>
-                <td class="text-center">1.1</td>
+    <th rowspan="2">ผ่านตามเกณฑ์
+        การเทียบโอน<br>(ระบุเกรด)</th>
+    <th colspan="2">ทดสอบความรู้</th>
+    <th rowspan="2">หมายเหตุ</th>
+</tr>
+<tr>
+    <th>คะแนน</th>
+    <th>ผลการ
+        ประเมิน</th>
+</tr>
+</thead>
 
-                <td class="text-center">{% if item.status == 'approved' %}/{% endif %}</td>
-                <td></td> <td></td> <td></td>
-            </tr>
-            {% endfor %}
-            
-            {% for i in "12345678" %}
-            <tr>
-                <td style="height: 20px;"></td><td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<tbody>
 
+<tr class="category-row">
+    <td colspan="14">หมวดศึกษาทั่วไป</td>
+</tr>
 
-    </table> <div class="footer-section" style="margin-top: 20px; font-size: 12px; page-break-inside: avoid;">
-        
-        <div class="notes" style="margin-bottom: 30px;">
-            <strong>หมายเหตุ :</strong>
-            <div style="margin-left: 15px; line-height: 1.6;">
-                1. ผลการประเมินให้ใส่เครื่องหมาย ✓ คือ ผ่าน x คือ ไม่ผ่าน<br>
-                2. ช่องการบันทึกผลให้ระบุตามเกณฑ์ที่ใช้ประเมิน คือ 
-                <strong>น.ท.</strong> (หน่วยกิตเทียบโอน), 
-                <strong>น.ม.</strong> (หน่วยกิตจากการทดสอบมาตรฐาน), 
-                <strong>น.ส.</strong> (หน่วยกิตจากการทดสอบที่ไม่ใช่การทดสอบมาตรฐาน),<br>
-                &nbsp;&nbsp;&nbsp;<strong>น.ง.</strong> (หน่วยกิตจากการประเมินแฟ้มสะสมผลงาน), 
-                <strong>น.ฝ.</strong> (หน่วยกิตจากการประเมินการจัดการศึกษาหรืออบรมที่จัดโดยหน่วยงานอื่น), 
-                <strong>น.ธ.</strong> (หน่วยกิตจากการประเมินจัดการศึกษาหลักสูตร ในระบบของมหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน)
-            </div>
-        </div>
+{% for item in items %}
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ item.original_course.course_code }}</td>
+    <td class="course-name text-left">{{ item.original_course.course_name_th }}</td>
+    <td>{{ item.original_course.credits }}</td>
+    <td>{{ item.grade }}</td>
 
-        <table style="width: 100%; border: none;">
-            <tr style="border: none;">
-                
-                <td style="border: none; text-align: center; width: 25%; vertical-align: top;">
-                    <div>ลงชื่อ..........................................................(นักศึกษา)</div>
-                    <div style="margin-top: 5px;">({{ request.student.first_name }} {{ request.student.last_name }})</div>
-                    <div style="margin-top: 5px;">............../............../..............</div>
-                </td>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ item.aicomparisonresult.suggested_course.course_code }}</td>
+    <td class="course-name text-left">{{ item.aicomparisonresult.suggested_course.course_name_th }}</td>
+    <td>{{ item.aicomparisonresult.suggested_course.credits }}</td>
+    <td>1.1</td>
 
-                <td style="border: none; text-align: center; width: 25%; vertical-align: top;">
-                    <div>ลงชื่อ..........................................................(กรรมการเทียบโอน)</div>
-                    <div style="margin-top: 5px;">(นายโต้ง ดิวะ)</div>
-                    <div style="margin-top: 5px;">............../............../..............</div>
-                </td>
+    <td>{% if item.status == 'approved' %}✓{% endif %}</td>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
+{% endfor %}
 
-                <td style="border: none; text-align: center; width: 25%; vertical-align: top;">
-                    <div>ลงชื่อ..........................................................(กรรมการเทียบโอน)</div>
-                    <div style="margin-top: 5px;">(นายนราวิทย์ กิจเจริญ)</div>
-                    <div style="margin-top: 5px;">............../............../..............</div>
-                </td>
+{% for i in "12345" %}
+<tr>
+    <td>&nbsp;</td><td></td><td></td><td></td><td></td>
+    <td></td><td></td><td></td><td></td><td></td>
+    <td></td><td></td><td></td><td></td>
+</tr>
+{% endfor %}
 
-                <td style="border: none; text-align: center; width: 25%; vertical-align: top;">
-                    <div>ลงชื่อ..........................................................(กรรมการเทียบโอน)</div>
-                    <div style="margin-top: 5px;">(นายติ่ม เพื่อนโต้ง)</div>
-                    <div style="margin-top: 5px;">............../............../..............</div>
-                </td>
+</tbody>
+</table>
 
-            </tr>
-        </table>
-    </div>
-    </body>
-</html>
+<!-- ===== หมายเหตุ (ครบทุกบรรทัด) ===== -->
+<div style="margin-top:8px; font-size:8.8px;">
+<strong>หมายเหตุ :</strong><br>
+1. ผลการประเมินให้ใส่เครื่องหมาย ✓ คือ ผ่าน และ x คือ ไม่ผ่าน<br>
+2. ช่องการบันทึกผลให้ระบุตามเกณฑ์ที่ใช้ประเมิน คือ<br>
+&nbsp;&nbsp;&nbsp;น.ท. (หน่วยกิตเทียบโอน),
+น.ม. (หน่วยกิตจากการทดสอบมาตรฐาน),
+น.ส. (หน่วยกิตจากการทดสอบที่ไม่ใช่การทดสอบมาตรฐาน),<br>
+&nbsp;&nbsp;&nbsp;น.ง. (หน่วยกิตจากการประเมินแฟ้มสะสมผลงาน),
+น.ฝ. (หน่วยกิตจากการประเมินการจัดการศึกษาหรืออบรมที่จัดโดยหน่วยงานอื่นๆ),<br>
+&nbsp;&nbsp;&nbsp;น.ธ. (หน่วยกิตจากการประเมินจัดการศึกษาหลักสูตร
+ในระบบธนาคารหน่วยกิตของมหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน)
+</div>
+
+<!-- ===== SIGNATURE / ชื่ออาจารย์ ===== -->
+<div style="margin-top:12px; page-break-inside:avoid;">
+<table style="width:100%; border:none;">
+<tr>
+
+<td style="width:25%; border:none; text-align:center;">
+ลงชื่อ...................................................(นักศึกษา)<br>
+({{ request.student.first_name }} {{ request.student.last_name }})<br>
+วันที่ ......../......../........
+</td>
+
+<td style="width:25%; border:none; text-align:center;">
+ลงชื่อ...................................................(กรรมการเทียบโอน)<br>
+(ว่าที่ร้อยตรีกฤษฎา บุญมีวิเศษ)<br>
+วันที่ ......../......../........
+</td>
+
+<td style="width:25%; border:none; text-align:center;">
+ลงชื่อ...................................................(กรรมการเทียบโอน)<br>
+(นายนราวิทย์ กิจเจริญ)<br>
+วันที่ ......../......../........
+</td>
+
+<td style="width:25%; border:none; text-align:center;">
+ลงชื่อ...................................................(กรรมการเทียบโอน)<br>
+(นายอัษฎาวุธ เพชรพรรณ)<br>
+วันที่ ......../......../........
+</td>
+
+</tr>
+</table>
+</div>
+
 </body>
 </html>

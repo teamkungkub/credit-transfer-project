@@ -4,8 +4,9 @@ from sentence_transformers import SentenceTransformer, util
 from .models import SourceCourse, TargetCourse
 import re # เพิ่ม library สำหรับจัดการข้อความ
 
-# โมเดลเดิม: 'paraphrase-multilingual-MiniLM-L12-v2'
-# โมเดลใหม่: 'intfloat/multilingual-e5-large'
+# โมเดลที่ 1: 'paraphrase-multilingual-MiniLM-L12-v2'
+# โมเดลที่ 2: 'intfloat/multilingual-e5-large'
+# โมเดลที่ 3: 'BAAI/bge-m3'
 # โหลดโมเดล AI
 print("Loading AI Model (paraphrase-multilingual-MiniLM-L12-v2)... Please wait.")
 model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')

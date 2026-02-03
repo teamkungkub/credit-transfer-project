@@ -97,19 +97,30 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 #DATABASES = {
-    #'default': {
-        #'ENGINE': 'django.db.backends.postgresql',
-        #'NAME': 'credit_transfer_db',
-        #'USER': 'credit_transfer_user',
-        #'PASSWORD': '1234', 
-        #'HOST': 'localhost',
-        #'PORT': '5433', # ตรวจสอบให้แน่ใจว่า Port นี้ถูกต้อง (ปกติ PostgreSQL ใช้ 5432 แต่ถ้าคุณตั้ง 5433 ก็ใช้ตามนี้)
-    #}
+   # 'default': {
+   #     'ENGINE': 'django.db.backends.postgresql',
+   #    'NAME': 'credit_transfer_db',
+   #     'USER': 'credit_transfer_user',
+   #     'PASSWORD': '1234', 
+  #   'HOST': 'localhost',
+  #      'PORT': '5433', # ตรวจสอบให้แน่ใจว่า Port นี้ถูกต้อง (ปกติ PostgreSQL ใช้ 5432 แต่ถ้าคุณตั้ง 5433 ก็ใช้ตามนี้)
+ #  }
 #}
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        
+        # ส่วนสำคัญ: ต้องเป็น postgres.[รหัสโปรเจกต์]
+        'USER': 'postgres.ziqxqckyqvolhezevfei', 
+        
+        # รหัสผ่านของคุณ (ต้องไม่มีช่องว่าง)
+        'PASSWORD': '0965689823teaM',
+        
+        'HOST': 'aws-1-ap-southeast-1.pooler.supabase.com',
+        'PORT': '6543',
     }
 }
 
@@ -182,3 +193,9 @@ CORS_ALLOW_CREDENTIALS = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+STATIC_URL = 'static/'
+
+# 👇 เพิ่มบรรทัดนี้ลงไปครับ (เพื่อให้ WhiteNoise ทำงานได้)
+import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

@@ -1,11 +1,5 @@
-# Python / Django
 venv/
 __pycache__/
 *.pyc
 db.sqlite3
-.env
-
-# Node / React
-node_modules/
-dist/
 .DS_Store

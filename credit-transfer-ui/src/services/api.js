@@ -113,3 +113,7 @@ export const manageData = {
   delete: (resource, id) => apiClient.delete(`/manage/${resource}/${id}/`),
 };
 
+export const getStudentRequests = () => {
+  return axios.get('/api/student/requests/'); // URL ตาม Backend ของคุณ
+};
+

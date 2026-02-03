@@ -55,7 +55,7 @@ function ApprovalResultPage() {
           <h1>สรุปผลการพิจารณา</h1>
         </div>
         <div className="header-right">
-          <Link to="/faculty/dashboard" className="link-dashboard">กลับหน้าหลัก</Link>
+          <Link to="/faculty/" className="link-dashboard">กลับหน้าหลัก</Link>
         </div>
       </header>
 
