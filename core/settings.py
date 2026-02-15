@@ -186,10 +186,13 @@ REST_FRAMEWORK = {
 
 # ตั้งค่า CORS ให้ Frontend เข้าถึงได้
 CORS_ALLOWED_ORIGINS = [
-   "https://credit-transfer-ui.onrender.com",
+    "http://162.141.142.3",
+    "http://localhost:5173", # เผื่อไว้รันเทสในเครื่องตัวเอง
+    "http://127.0.0.1:5173",
 ]
+
 CSRF_TRUSTED_ORIGINS = [
-    "https://credit-transfer-ui.onrender.com",
+    "http://162.141.142.3",
 ]
 CORS_ALLOW_HEADERS = ["Authorization", "Content-Type"]
 CORS_ALLOW_CREDENTIALS = True

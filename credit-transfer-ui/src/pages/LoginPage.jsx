@@ -37,7 +37,7 @@ function LoginPage() {
       loginUser(response.data || response);
 
       // 3. เอา Token ไปดึง Profile เพื่อดูสิทธิ์
-      const profileResponse = await fetch('https://credit-transfer-project.onrender.com/api/profile/', {
+      const profileResponse = await fetch('/api/profile/', {
           method: 'GET',
           headers: {
               'Authorization': `Bearer ${token}`, // ต้องเว้นวรรคหลัง Bearer
@@ -53,7 +53,7 @@ function LoginPage() {
           if (userData.is_superuser === true) {
               navigate('/admin/dashboard');
           } 
-          // window.location.href = 'https://credit-transfer-project.onrender.com/admin'; 
+          
           else if (userData.is_faculty === true) {
               navigate('/faculty'); 
           } 

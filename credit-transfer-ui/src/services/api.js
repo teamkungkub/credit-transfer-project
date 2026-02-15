@@ -2,9 +2,8 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'https://credit-transfer-project.onrender.com/api',
+  baseURL: '/api',
 });
-
 // Interceptor ที่จะทำงานก่อนทุก Request
 apiClient.interceptors.request.use((config) => {
   // ดึง authToken จาก Local Storage
