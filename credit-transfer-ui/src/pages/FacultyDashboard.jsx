@@ -172,7 +172,7 @@ function FacultyDashboard() {
                     <div className="fd-evidence">
                       <strong>หลักฐานแนบ:</strong>
                       <a 
-                        href={req.evidence_file}
+                        href={req.evidence_file.startsWith('http') ? req.evidence_file : `http://162.141.142.3${req.evidence_file}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="fd-evidence-link"
