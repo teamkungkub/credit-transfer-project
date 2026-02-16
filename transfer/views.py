@@ -5,17 +5,16 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.db.models import Sum
-from rest_framework import viewsets # Import viewsets
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.templatetags.static import static
 import base64
 import os
-from rest_framework import viewsets
 from django.conf import settings
 from weasyprint import HTML, CSS
+from weasyprint.text.fonts import FontConfiguration
 from .utils import django_url_fetcher
 from .models import (
     Institution,
@@ -41,56 +40,13 @@ from .serializers import (
     TargetCourseSerializer,
     TargetCourseDetailSerializer,
     SourceCourseDetailSerializer,
-    
 )
 from .ai_comparator import find_best_match, calculate_similarity
 
 #================================#
-#   Authentication & User Views  #
+#  Authentication & User Views  #
 #================================#
 
-# transfer/views.py
-
-# ... imports ...
-
-# transfer/views.py
-# ... (imports เดิม)
-
-class TransferEvaluationPDFView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, pk):
-        try:
-            # ดึงคำร้อง
-            transfer_request = TransferRequest.objects.get(pk=pk)
-            approved_items = transfer_request.requestitem_set.filter(status='approved')
-
-            # สร้าง URL ของโลโก้จาก static
-            logo_url = request.build_absolute_uri(static('images/logo.png'))
-
-            context = {
-                'request': transfer_request,
-                'items': approved_items,
-                'logo_url': logo_url,  # ส่งไป template
-            }
-
-            # แปลง template เป็น HTML string
-            html_string = render_to_string('transfer/transfer_evaluation_form.html', context)
-
-            # สร้าง PDF
-            html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
-            css = CSS(string='@page { size: A4 landscape; margin: 1cm; }')
-            pdf_file = html.write_pdf(stylesheets=[css])
-
-            # ส่ง PDF กลับ
-            response = HttpResponse(pdf_file, content_type='application/pdf')
-            response['Content-Disposition'] = f'inline; filename="evaluation_form_{pk}.pdf"'
-            return response
-
-        except TransferRequest.DoesNotExist:
-            return HttpResponse("ไม่พบคำร้อง", status=404)
-        except Exception as e:
-            return HttpResponse(f"Error: {str(e)}", status=500)
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
@@ -108,7 +64,7 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 #================================#
-#   Student-Facing Views         #
+#  Student-Facing Views         #
 #================================#
 
 class TargetCurriculumListView(generics.ListAPIView):
@@ -143,9 +99,7 @@ class TransferRequestCreateView(generics.CreateAPIView):
         if not target_curriculum:
             return
 
-        # วนลูปประมวลผล AI
         for item in transfer_request.requestitem_set.all():
-            # --- จุดที่แก้ไข: รับค่า reason เพิ่มมาเป็นตัวที่ 3 ---
             best_match, score, reason = find_best_match(item.original_course, target_curriculum.id)
             
             if best_match:
@@ -153,10 +107,6 @@ class TransferRequestCreateView(generics.CreateAPIView):
                     request_item=item,
                     suggested_course=best_match,
                     similarity_score=score,
-                    # --- บันทึกเหตุผลลงฐานข้อมูล (ถ้า Model รองรับ) ---
-                    # explanation=reason 
-                    # หมายเหตุ: ถ้า Model AIComparisonResult ยังไม่มี field 'explanation' 
-                    # ให้ลบบรรทัด explanation=reason ออกก่อน หรือไปเพิ่ม field ใน models.py
                 )
 
 class NotificationView(APIView):
@@ -173,7 +123,7 @@ class NotificationView(APIView):
         return Response(serializer.data)
 
 #================================#
-#   Faculty-Facing Views         #
+#  Faculty-Facing Views         #
 #================================#
 
 class PendingRequestListView(generics.ListAPIView):
@@ -222,12 +172,15 @@ class TransferRequestDetailView(generics.RetrieveAPIView):
     serializer_class = TransferRequestListSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+#================================#
+#  PDF Generation Views         #
+#================================#
+
 class TransferReportPDFView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         try:
-            # ดึง ID จาก URL (pk)
             pk = kwargs.get('pk') 
             transfer_request = TransferRequest.objects.get(pk=pk)
             
@@ -238,25 +191,30 @@ class TransferReportPDFView(APIView):
             approved_items = transfer_request.requestitem_set.filter(status='approved')
             
             total_credits = approved_items.aggregate(
-    Sum('original_course__credits')
-)['original_course__credits__sum'] or 0
+                Sum('original_course__credits')
+            )['original_course__credits__sum'] or 0
+
+            logo_url = request.build_absolute_uri(static('images/logo.png'))
 
             context = {
                 'request': transfer_request,
                 'items': approved_items,
                 'total_credits': total_credits,
                 'student_id_safe': student_id,
+                'logo_url': logo_url,
             }
             
-            try:
-                html_string = render_to_string('transfer/transfer_report.html', context)
-            except Exception as e:
-                print("❌ หาไฟล์ Template ไม่เจอ! ตรวจสอบ folder templates/transfer/")
-                raise e
+            html_string = render_to_string('transfer/transfer_report.html', context)
             
-            html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
-            css = CSS(string='@page { size: A4; margin: 1.5cm; }')
-            pdf_file = html.write_pdf(stylesheets=[css])
+            font_config = FontConfiguration()
+            html = HTML(string=html_string, base_url=request.build_absolute_uri('/'), url_fetcher=django_url_fetcher)
+            css_string = '''
+            @page { size: A4 portrait; margin: 1cm; }
+            body { font-family: "TH Sarabun New", "Sarabun", sans-serif !important; }
+            '''
+            css = CSS(string=css_string, font_config=font_config)
+            
+            pdf_file = html.write_pdf(stylesheets=[css], font_config=font_config)
             
             response = HttpResponse(pdf_file, content_type='application/pdf')
             response['Content-Disposition'] = f'inline; filename="transfer_report_{pk}.pdf"'
@@ -270,40 +228,8 @@ class TransferReportPDFView(APIView):
             print(traceback.format_exc()) 
             print("="*60 + "\n")
             return HttpResponse(f"<h1>เกิดข้อผิดพลาด (Server Error)</h1><pre>{traceback.format_exc()}</pre>", status=500)
-        
-class TransferEvaluationPDFView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, pk):
-        try:
-            transfer_request = TransferRequest.objects.get(pk=pk)
-            
-            # ดึงเฉพาะวิชาที่อนุมัติ
-            approved_items = transfer_request.requestitem_set.filter(status='approved')
 
-            context = {
-                'request': transfer_request,
-                'items': approved_items,
-            }
-            
-            html_string = render_to_string('transfer/transfer_evaluation_form.html', context)
-            
-            html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
-            
-            # ตั้งค่าหน้ากระดาษเป็น แนวนอน (Landscape) ตามรูป
-            css = CSS(string='@page { size: A4 landscape; margin: 1cm; }')
-            
-            pdf_file = html.write_pdf(stylesheets=[css])
-            
-            response = HttpResponse(pdf_file, content_type='application/pdf')
-            response['Content-Disposition'] = f'inline; filename="transfer_evaluation_{pk}.pdf"'
-            return response
-
-        except TransferRequest.DoesNotExist:
-            return HttpResponse("ไม่พบคำร้อง", status=404)
-        except Exception as e:
-             return HttpResponse(f"Error: {str(e)}", status=500)
-        
 class TransferEvaluationPDFView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -311,21 +237,26 @@ class TransferEvaluationPDFView(APIView):
         try:
             transfer_request = TransferRequest.objects.get(pk=pk)
             approved_items = transfer_request.requestitem_set.filter(status='approved')
+            
+            logo_url = request.build_absolute_uri(static('images/logo.png'))
 
             context = {
                 'request': transfer_request,
                 'items': approved_items,
+                'logo_url': logo_url,
             }
             
             html_string = render_to_string('transfer/transfer_evaluation_form.html', context)
             
-            # --- ใช้ Custom URL Fetcher ---
-            
+            font_config = FontConfiguration()
             html = HTML(string=html_string, base_url=request.build_absolute_uri('/'), url_fetcher=django_url_fetcher)
-            # ------------------------------
+            css_string = '''
+            @page { size: A4 landscape; margin: 1cm; }
+            body { font-family: "TH Sarabun New", "Sarabun", sans-serif !important; }
+            '''
+            css = CSS(string=css_string, font_config=font_config)
             
-            css = CSS(string='@page { size: A4 landscape; margin: 1cm; }')
-            pdf_file = html.write_pdf(stylesheets=[css])
+            pdf_file = html.write_pdf(stylesheets=[css], font_config=font_config)
             
             response = HttpResponse(pdf_file, content_type='application/pdf')
             response['Content-Disposition'] = f'inline; filename="evaluation_form_{pk}.pdf"'
@@ -335,11 +266,15 @@ class TransferEvaluationPDFView(APIView):
             return HttpResponse("ไม่พบคำร้อง", status=404)
         except Exception as e:
             return HttpResponse(f"Error: {str(e)}", status=500)
-        
+
+#================================#
+#  ViewSets                     #
+#================================#
+
 class InstitutionViewSet(viewsets.ModelViewSet):
     queryset = Institution.objects.all()
     serializer_class = InstitutionSerializer
-    permission_classes = [permissions.IsAuthenticated] # หรือ IsAdminUser
+    permission_classes = [permissions.IsAuthenticated]
 
 class CurriculumViewSet(viewsets.ModelViewSet):
     queryset = Curriculum.objects.all()
@@ -348,7 +283,6 @@ class CurriculumViewSet(viewsets.ModelViewSet):
 
 class TargetCourseViewSet(viewsets.ModelViewSet):
     queryset = TargetCourse.objects.all()
-    # แก้จาก CourseSerializer เป็น TargetCourseSerializer
     serializer_class = TargetCourseSerializer 
     permission_classes = [permissions.IsAuthenticated]
 
@@ -356,12 +290,3 @@ class SourceCourseViewSet(viewsets.ModelViewSet):
     queryset = SourceCourse.objects.all()
     serializer_class = SourceCourseSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-class TargetCourseViewSet(viewsets.ModelViewSet):
-    queryset = TargetCourse.objects.all()
-    # ใช้ Serializer ธรรมดาเพื่อให้บันทึกง่าย (รับเป็น ID)
-    serializer_class = SourceCourseSerializer 
-    # หมายเหตุ: ถ้าคุณแยก TargetCourseSerializer ก็ให้ใช้ตัวนั้น
-    # แต่ถ้าโครงสร้างเหมือนกันใช้ SourceCourseSerializer แก้ขัดได้ หรือสร้างใหม่ดีกว่า
-    permission_classes = [permissions.IsAuthenticated]
-

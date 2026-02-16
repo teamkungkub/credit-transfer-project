@@ -16,6 +16,7 @@ import os
 from rest_framework import viewsets
 from django.conf import settings
 from weasyprint import HTML, CSS
+from weasyprint.text.fonts import FontConfiguration
 from .utils import django_url_fetcher
 from .models import (
     Institution,
@@ -61,28 +62,40 @@ class TransferEvaluationPDFView(APIView):
 
     def get(self, request, pk):
         try:
-            # ดึงคำร้อง
+            # 1. ดึงข้อมูลคำร้อง
             transfer_request = TransferRequest.objects.get(pk=pk)
             approved_items = transfer_request.requestitem_set.filter(status='approved')
 
-            # สร้าง URL ของโลโก้จาก static
+            # 2. สร้าง URL ของโลโก้แบบเต็ม เพื่อไม่ให้รูปหาย
             logo_url = request.build_absolute_uri(static('images/logo.png'))
 
             context = {
                 'request': transfer_request,
                 'items': approved_items,
-                'logo_url': logo_url,  # ส่งไป template
+                'logo_url': logo_url,  # ส่ง URL โลโก้ไปที่ Template
             }
 
-            # แปลง template เป็น HTML string
+            # 3. แปลง Template เป็น HTML
             html_string = render_to_string('transfer/transfer_evaluation_form.html', context)
-
-            # สร้าง PDF
-            html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
-            css = CSS(string='@page { size: A4 landscape; margin: 1cm; }')
-            pdf_file = html.write_pdf(stylesheets=[css])
-
-            # ส่ง PDF กลับ
+            
+            # --- 4. เริ่มเวทมนตร์บังคับ WeasyPrint (ฟอนต์ + รูปภาพ) ---
+            font_config = FontConfiguration()
+            
+            # ใช้ django_url_fetcher เพื่อให้มันดึงรูปโลโก้จาก static ได้ชัวร์ๆ
+            html = HTML(string=html_string, base_url=request.build_absolute_uri('/'), url_fetcher=django_url_fetcher)
+            
+            # บังคับ Font ไทย และหน้ากระดาษแนวนอน
+            css_string = '''
+            @page { size: A4 landscape; margin: 1cm; }
+            body { font-family: "TH Sarabun New", "Sarabun", sans-serif !important; }
+            '''
+            css = CSS(string=css_string, font_config=font_config)
+            
+            # สั่งสร้าง PDF
+            pdf_file = html.write_pdf(stylesheets=[css], font_config=font_config)
+            # ------------------------------------
+            
+            # 5. ส่งไฟล์กลับไปยังหน้าจอ
             response = HttpResponse(pdf_file, content_type='application/pdf')
             response['Content-Disposition'] = f'inline; filename="evaluation_form_{pk}.pdf"'
             return response
@@ -238,8 +251,8 @@ class TransferReportPDFView(APIView):
             approved_items = transfer_request.requestitem_set.filter(status='approved')
             
             total_credits = approved_items.aggregate(
-                Sum('aicomparisonresult__suggested_course__credits')
-            )['aicomparisonresult__suggested_course__credits__sum'] or 0
+    Sum('original_course__credits')
+)['original_course__credits__sum'] or 0
 
             context = {
                 'request': transfer_request,
@@ -320,7 +333,7 @@ class TransferEvaluationPDFView(APIView):
             html_string = render_to_string('transfer/transfer_evaluation_form.html', context)
             
             # --- ใช้ Custom URL Fetcher ---
-            # base_url ต้องชี้ไปที่ root ของเว็บ (เช่น http://127.0.0.1:8000/)
+            
             html = HTML(string=html_string, base_url=request.build_absolute_uri('/'), url_fetcher=django_url_fetcher)
             # ------------------------------
             
