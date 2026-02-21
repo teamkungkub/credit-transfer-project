@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: '/api',
+  baseURL: 'http://162.141.142.3/api',
 });
 // Interceptor ที่จะทำงานก่อนทุก Request
 apiClient.interceptors.request.use((config) => {
@@ -113,6 +113,6 @@ export const manageData = {
 };
 
 export const getStudentRequests = () => {
-  return axios.get('/api/student/requests/'); // URL ตาม Backend ของคุณ
+  return apiClient.get('/student/requests/'); // URL ตาม Backend ของคุณ
 };
 
