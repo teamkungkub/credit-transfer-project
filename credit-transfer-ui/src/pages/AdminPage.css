@@ -58,7 +58,6 @@ body {
 /* ==========================================================
    JSX: <header className="dashboard-header"
               style={{ borderBottom: '3px solid #dc3545' }}>
-   — inline style จะ override borderBottom
    ========================================================== */
 .dashboard-header {
   background: #ffffff;
@@ -67,22 +66,21 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 3px solid var(--red);  /* ← ตรงกับ inline style ใน JSX */
+  border-bottom: 3px solid var(--red);
   position: sticky;
   top: 0;
   z-index: 100;
   box-shadow: var(--sh-sm);
 }
 
-/* JSX: <h1 style={{ color: '#dc3545' }}>
-   inline style จะ set สี — เราแค่จัดการ layout/font ที่นี่ */
+/* JSX: <h1 style={{ color: '#dc3545' }}> */
 .dashboard-header h1 {
   font-family: 'DM Sans', 'Sarabun', sans-serif;
   font-size: 1.4rem;
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.3px;
-  color: var(--red);  /* fallback; inline style ใน JSX ยังทำงาน */
+  color: var(--red);
 }
 
 /* ==========================================================
@@ -95,7 +93,7 @@ body {
 }
 
 /* ==========================================================
-   JSX: <span className="user-info">Login as: {user?.username}</span>
+   JSX: <span className="user-info">
    ========================================================== */
 .user-info {
   font-size: 1rem;
@@ -103,7 +101,7 @@ body {
 }
 
 /* ==========================================================
-   JSX: <button onClick={logoutUser} className="logout-button">
+   JSX: <button className="logout-button">
    ========================================================== */
 .logout-button {
   padding: 8px 14px;
@@ -118,17 +116,16 @@ body {
   transition: background var(--t), transform var(--t), box-shadow var(--t);
   box-shadow: 0 2px 8px rgba(220,53,69,0.28);
 }
-
 .logout-button:hover {
   background: var(--red-dark);
   transform: translateY(-1px);
   box-shadow: var(--sh-red);
 }
-
 .logout-button:active { transform: translateY(0); }
 
 /* ==========================================================
    JSX: <main className="dashboard-main">
+   ★ นี่คือ layout หลัก — ต้องมี width + margin:auto เพื่อ center
    ========================================================== */
 .dashboard-main {
   width: 95%;
@@ -140,10 +137,7 @@ body {
 }
 
 /* ==========================================================
-   JSX: className="btn"
-        className="btn btn-primary"
-        className="btn btn-secondary"
-        className={`btn ${activeTab==='...' ? 'btn-primary':'btn-secondary'}`}
+   JSX: className="btn"  /  "btn btn-primary"  /  "btn btn-secondary"
    ========================================================== */
 .btn {
   border: none;
@@ -152,43 +146,36 @@ body {
   cursor: pointer;
   font-family: 'Sarabun', sans-serif;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   transition: background var(--t), transform var(--t), box-shadow var(--t);
   display: inline-flex;
   align-items: center;
   gap: 6px;
   line-height: 1.2;
 }
-
 .btn:active { transform: scale(0.97); }
 
-/* JSX: className="btn btn-primary"
-        style={{ backgroundColor: '#dc3545' }}  ← inline override บนปุ่ม active tab */
 .btn-primary {
   color: white;
   background: var(--red);
   box-shadow: 0 2px 8px rgba(220,53,69,0.28);
 }
-
 .btn-primary:hover {
   background: var(--red-hover);
   transform: translateY(-1px);
   box-shadow: var(--sh-red);
 }
 
-/* JSX: className="btn btn-secondary" */
 .btn-secondary {
   background: #e0e0e0;
   color: #333;
 }
-
 .btn-secondary:hover {
   background: #d5d5d5;
   transform: translateY(-1px);
 }
 
-/* JSX: className="btn btn-reject"
-        style={{ padding: '5px 10px', fontSize: '0.8rem' }} ← inline override ขนาด */
+/* JSX: className="btn btn-reject"  +  style={{ padding:'5px 10px', fontSize:'0.8rem' }} */
 .btn-reject {
   background: var(--red);
   color: white;
@@ -202,14 +189,12 @@ body {
   transition: background var(--t), transform var(--t);
   box-shadow: 0 2px 6px rgba(220,53,69,0.25);
 }
-
 .btn-reject:hover {
   background: var(--red-dark);
   transform: translateY(-1px);
 }
 
-/* JSX: className="btn btn-primary btn-add-small"
-        style={{ marginBottom: '20px', backgroundColor: '#dc3545' }} */
+/* JSX: className="btn btn-primary btn-add-small" */
 .btn-add-small {
   padding: 6px 14px !important;
   font-size: 0.85rem !important;
@@ -218,9 +203,6 @@ body {
 
 /* ==========================================================
    JSX: <div className="request-card">
-        <div className="request-card"
-             style={{ marginBottom: '20px', border: '2px solid #dc3545' }}>
-   — border และ marginBottom ถูก set ด้วย inline style ใน form card
    ========================================================== */
 .request-card {
   background: var(--surface);
@@ -228,13 +210,13 @@ body {
   padding: 20px;
   box-shadow: var(--sh-md);
   transition: box-shadow var(--t);
+  /* ไม่ set border ที่นี่ — inline style ใน JSX จะ set เอง */
 }
-
 .request-card:hover { box-shadow: var(--sh-lg); }
 
 /* ==========================================================
    JSX: <div className="request-card-header"
-              style={{ background: '#fff5f5' }}>  ← เฉพาะ form card
+              style={{ background: '#fff5f5' }}>  (เฉพาะ form card)
    ========================================================== */
 .request-card-header {
   padding-bottom: 12px;
@@ -245,8 +227,6 @@ body {
   flex-wrap: wrap;
   gap: 10px;
 }
-
-/* JSX: <h3 style={{ margin: 0 }}> ใน request-card-header */
 .request-card-header h3 {
   margin: 0;
   font-family: 'DM Sans', 'Sarabun', sans-serif;
@@ -263,9 +243,8 @@ body {
 }
 
 /* ==========================================================
-   JSX: className="status-select"
-        ใช้กับ <input>, <select>, <textarea>
-        style={{ width: '100px' }}  ← inline override เฉพาะช่องหน่วยกิต
+   JSX: className="status-select"  (input / select / textarea)
+        style={{ width: '100px' }}  ← inline override เฉพาะ credits
    ========================================================== */
 .status-select,
 textarea.status-select {
@@ -279,20 +258,14 @@ textarea.status-select {
   font-family: 'Sarabun', sans-serif;
   background-color: var(--surface-2);
   color: var(--text);
-  appearance: auto;
 }
-
-.status-select:hover {
-  border-color: #c8c8c8;
-}
-
+.status-select:hover { border-color: #c8c8c8; }
 .status-select:focus,
 textarea.status-select:focus {
   border-color: var(--red);
   background: var(--surface);
   box-shadow: 0 0 0 3px rgba(220,53,69,0.10);
 }
-
 textarea.status-select {
   resize: vertical;
   min-height: 110px;
@@ -304,19 +277,13 @@ textarea.status-select {
 .course-table {
   width: 100%;
   border-collapse: collapse;
-  overflow: hidden;
   border-radius: var(--r-md);
+  overflow: hidden;
 }
-
-/* JSX thead */
 .course-table thead {
   background: var(--red);
   color: white;
 }
-
-/* JSX: <th style={{ width: '10%' }}>ID</th>
-        <th>ข้อมูล</th>
-        <th style={{ width: '20%' }}>จัดการ</th> */
 .course-table th,
 .course-table td {
   padding: 14px 16px;
@@ -324,7 +291,6 @@ textarea.status-select {
   border-bottom: 1px solid #eee;
   font-size: 0.95rem;
 }
-
 .course-table th {
   font-family: 'DM Sans', 'Sarabun', sans-serif;
   font-size: 0.82rem;
@@ -332,46 +298,32 @@ textarea.status-select {
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
+.course-table tbody tr { transition: background var(--t); }
+.course-table tbody tr:last-child td { border-bottom: none; }
+.course-table tbody tr:hover { background: #fff5f6; }
+.course-table button { border-radius: 6px; }
 
-.course-table tbody tr {
-  transition: background var(--t);
-}
-
-.course-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.course-table tbody tr:hover {
-  background: #fff5f6;
-}
-
-/* JSX: .course-table button (ปุ่มในตาราง) */
-.course-table button {
-  border-radius: 6px;
-}
-
-/* ----------------------------------------------------------
+/* ==========================================================
    RESPONSIVE
----------------------------------------------------------- */
+   ========================================================== */
 @media (max-width: 768px) {
   .dashboard-header { padding: 0 20px; }
   .dashboard-header h1 { font-size: 1.1rem; }
   .dashboard-main { width: 98%; margin: 20px auto; gap: 14px; }
   .request-card { padding: 16px; }
 }
-
 @media (max-width: 480px) {
   .header-menu .user-info { display: none; }
 }
+
 /* ==========================================================
    AdminPage.css  —  Admin-specific styles
    Import หลัง FacultyDashboard.css
-   Map 1:1 กับทุก className + inline style ใน AdminPage.jsx
    ========================================================== */
 
 /* ==========================================================
    JSX: <div className="dashboard-content-wrapper">
-   — wrapper หลักของเนื้อหาทั้งหน้า Admin
+   ★ ต้อง width:100% เพื่อให้กางเต็ม .dashboard-main
    ========================================================== */
 .dashboard-content-wrapper {
   width: 100%;
@@ -384,12 +336,9 @@ textarea.status-select {
 }
 
 /* ==========================================================
-   TAB GROUP
-   JSX: <div style={{ display:'flex', gap:'10px', marginBottom:'20px' }}>
-   — inline style (display:flex, gap, marginBottom) ทำงานเองแล้ว
-   NOTE: ไม่ override ด้วย child selector เพราะจะทำให้
-         max-width / margin:auto ของ .dashboard-main พัง
-         แนะนำเพิ่ม className="tab-group" ใน JSX ถ้าต้องการ pill style
+   TAB GROUP  (ใช้ได้ถ้าเพิ่ม className="tab-group" ใน JSX)
+   JSX เดิมใช้ inline style={{ display:'flex', gap:'10px', marginBottom:'20px' }}
+   ซึ่งทำงานได้เองอยู่แล้ว — ไม่ต้องเพิ่ม selector ที่จะรบกวน layout
    ========================================================== */
 .tab-group {
   display: inline-flex;
@@ -401,20 +350,17 @@ textarea.status-select {
   box-shadow: var(--sh-sm);
   margin-bottom: 20px;
 }
-
 .tab-group .btn.btn-secondary {
   background: transparent;
   color: var(--text-2);
   box-shadow: none;
   border-radius: 8px;
 }
-
 .tab-group .btn.btn-secondary:hover {
   background: var(--bg);
   color: var(--text);
   transform: none;
 }
-
 .tab-group .btn.btn-primary {
   border-radius: 8px;
   box-shadow: 0 3px 10px rgba(220,53,69,0.30);
@@ -423,8 +369,8 @@ textarea.status-select {
 /* ==========================================================
    FORM CARD
    JSX: <div className="request-card"
-              style={{ marginBottom: '20px', border: '2px solid #dc3545' }}>
-   — inline style set border แล้ว เราเพิ่ม visual enhancement
+              style={{ marginBottom:'20px', border:'2px solid #dc3545' }}>
+   — ดัก inline style ที่มี border:#dc3545
    ========================================================== */
 .request-card[style*="border"] {
   box-shadow: 0 0 0 1px rgba(220,53,69,0.08), var(--sh-md) !important;
@@ -436,20 +382,14 @@ textarea.status-select {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* FORM CARD HEADER
-   JSX: <div className="request-card-header"
-              style={{ background: '#fff5f5' }}>
-   — inline style set background แล้ว */
+/* JSX: <div className="request-card-header" style={{ background:'#fff5f5' }}> */
 .request-card[style*="border"] .request-card-header {
   margin: -20px -20px 0;
   padding: 14px 20px;
   border-radius: 11px 11px 0 0;
   border-bottom: 1px solid #ffd6da;
-  /* background: #fff5f5  ← มาจาก inline style JSX */
 }
-
-/* FORM CARD HEADER h3
-   JSX: <h3 style={{ margin: 0 }}>{isEditing ? 'แก้ไขข้อมูล' : 'เพิ่มข้อมูลใหม่'}</h3> */
+/* JSX: <h3 style={{ margin: 0 }}> ใน form card */
 .request-card[style*="border"] .request-card-header h3 {
   color: var(--red);
   font-size: 0.85rem !important;
@@ -460,12 +400,7 @@ textarea.status-select {
 
 /* ==========================================================
    FORM LABELS
-   JSX: <label>ชื่อสถาบัน / หลักสูตรเดิม:</label>
-        <label>รหัสวิชา:</label>
-        <label>ชื่อวิชา (ไทย):</label>
-        <label>หน่วยกิต:</label>
-        <label>สังกัดสถาบัน:</label>
-        <label>คำอธิบายรายวิชา:</label>
+   JSX: <label>ชื่อสถาบัน...</label>  <label>รหัสวิชา:</label> ฯลฯ
    ========================================================== */
 .request-card-body label {
   display: block;
@@ -477,34 +412,15 @@ textarea.status-select {
   text-transform: uppercase;
 }
 
-/* ==========================================================
-   FORM FLEX ROW
-   JSX: <div style={{ display: 'flex', gap: '10px' }}>
-        <div style={{ flex: 1, marginBottom: '10px' }}>   ← รหัสวิชา
-        <div style={{ flex: 2, marginBottom: '10px' }}>   ← ชื่อวิชา
-   — inline style ทำงานเองแล้ว ไม่ต้องเพิ่ม
-   ========================================================== */
-
-/* Credits input
-   JSX: style={{ width: '100px' }} — inline ทำงานแล้ว
-   เพิ่ม aesthetic */
+/* Credits input: JSX style={{ width:'100px' }} ทำงานแล้ว เพิ่มแค่ aesthetic */
 input[name="credits"].status-select {
   text-align: center;
   font-weight: 600;
-  font-size: 1rem !important;
 }
 
 /* ==========================================================
-   FORM SAVE BUTTON ROW
-   JSX: <div style={{ marginTop: '15px' }}>
-        <button type="submit" className="btn btn-primary"
-                style={{ backgroundColor: '#dc3545' }}>
-                บันทึก (Admin)
-        </button>
-        <button type="button" className="btn btn-secondary"
-                style={{ marginLeft: '10px' }}>
-                ยกเลิก
-        </button>
+   FORM BUTTON ROW
+   JSX: <div style={{ marginTop:'15px' }}>
    ========================================================== */
 .request-card-body form > div[style*="marginTop"] {
   border-top: 1px solid #f1f1f1;
@@ -516,75 +432,48 @@ input[name="credits"].status-select {
 
 /* ==========================================================
    DATA TABLE CARD
-   JSX: <div className="request-card">
-        <table className="course-table">
+   JSX: <div className="request-card">  ← wrapper ตาราง (ไม่มี inline border)
+   ★ ต้อง width:100% และไม่ set width:fit-content
    ========================================================== */
-
-/* ตาราง wrapper card — ไม่มี padding */
-.dashboard-content-wrapper > .request-card:last-child {
+.dashboard-content-wrapper .request-card:not([style*="border"]) {
   padding: 0;
   overflow: hidden;
+  width: 100%;
 }
 
-/* TABLE THEAD
-   Admin override — dark header แทน default red */
+/* TABLE THEAD — Admin dark header */
 .dashboard-content-wrapper .course-table thead {
   background: linear-gradient(135deg, #1e2029 0%, #2c2f3e 100%);
 }
-
 .dashboard-content-wrapper .course-table th {
   color: rgba(255,255,255,0.82);
   font-size: 0.78rem;
   letter-spacing: 0.8px;
   padding: 14px 18px;
 }
-
 .dashboard-content-wrapper .course-table td {
   padding: 15px 18px;
 }
 
-/* ID column
-   JSX: <th style={{ width: '10%' }}>ID</th> */
+/* ID column — JSX: <th style={{ width:'10%' }}> */
 .dashboard-content-wrapper .course-table td:first-child {
   color: var(--text-muted);
   font-size: 0.85rem;
   font-weight: 500;
 }
 
-/* Manage column
-   JSX: <th style={{ width: '20%' }}>จัดการ</th> */
+/* Manage column — JSX: <th style={{ width:'20%' }}> */
 .dashboard-content-wrapper .course-table td:last-child {
   white-space: nowrap;
 }
 
-/* ==========================================================
-   TABLE CELL — Institution name
-   JSX: {item.name && (
-          <div style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>
-            {item.name}
-          </div>
-        )}
-   — inline style ทำงาน แต่เพิ่ม row styling
-   ========================================================== */
-.dashboard-content-wrapper .course-table tbody tr:hover {
-  background: #f7f8ff;
-}
+/* Row hover + zebra */
+.dashboard-content-wrapper .course-table tbody tr:hover { background: #f7f8ff; }
+.dashboard-content-wrapper .course-table tbody tr:nth-child(even) { background: #fafafa; }
+.dashboard-content-wrapper .course-table tbody tr:nth-child(even):hover { background: #f7f8ff; }
 
-/* Zebra rows */
-.dashboard-content-wrapper .course-table tbody tr:nth-child(even) {
-  background: #fafafa;
-}
-.dashboard-content-wrapper .course-table tbody tr:nth-child(even):hover {
-  background: #f7f8ff;
-}
-
-/* ==========================================================
-   TABLE CELL — Course code span
-   JSX: <span style={{ color: '#dc3545', fontWeight: 'bold' }}>
-          {item.course_code}
-        </span>
-   — inline style set color/weight แล้ว เพิ่ม pill styling
-   ========================================================== */
+/* Course code pill
+   JSX: <span style={{ color:'#dc3545', fontWeight:'bold' }}>{item.course_code}</span> */
 .dashboard-content-wrapper .course-table td span[style*="dc3545"] {
   background: var(--red-light);
   padding: 2px 8px;
@@ -595,54 +484,37 @@ input[name="credits"].status-select {
   margin-right: 4px;
 }
 
-/* JSX: <small style={{ color: '#666' }}>หน่วยกิต... | สถาบัน:...</small> */
+/* Sub info — JSX: <small style={{ color:'#666' }}>หน่วยกิต... | สถาบัน:...</small> */
 .dashboard-content-wrapper .course-table td small[style*="666"] {
   display: block;
   margin-top: 4px;
-  line-height: 1.5;
   font-size: 0.82rem !important;
 }
 
-/* ==========================================================
-   TABLE BUTTONS
-   JSX: <button className="btn"
-                style={{ marginRight:'5px', background:'#ffc107',
-                         color:'black', padding:'5px 10px', fontSize:'0.8rem' }}>
-          แก้ไข
-        </button>
-   — inline style ทำงานแล้ว เพิ่ม hover/transition
-   ========================================================== */
+/* Edit button (yellow)
+   JSX: style={{ background:'#ffc107', color:'black', padding:'5px 10px', fontSize:'0.8rem' }} */
 .dashboard-content-wrapper .course-table td .btn[style*="ffc107"] {
   font-weight: 600;
   border-radius: 6px !important;
   transition: filter 0.15s ease, transform 0.15s ease !important;
 }
-
 .dashboard-content-wrapper .course-table td .btn[style*="ffc107"]:hover {
   filter: brightness(0.93);
   transform: translateY(-1px);
 }
 
-/* JSX: <button className="btn btn-reject"
-                style={{ padding: '5px 10px', fontSize: '0.8rem' }}>
-   — inline style override padding/size */
+/* Delete button
+   JSX: className="btn btn-reject" style={{ padding:'5px 10px', fontSize:'0.8rem' }} */
 .dashboard-content-wrapper .course-table .btn-reject {
   font-weight: 600;
   border-radius: 6px !important;
 }
 
-/* ==========================================================
-   EMPTY STATE
-   JSX: <td colSpan="3"
-            style={{ textAlign:'center', padding:'20px', color:'#999' }}>
-          -- ไม่พบข้อมูล --
-        </td>
-   — inline style ทำงานแล้ว เพิ่ม visual
-   ========================================================== */
+/* Empty state
+   JSX: <td colSpan="3" style={{ textAlign:'center', padding:'20px', color:'#999' }}> */
 .dashboard-content-wrapper .course-table td[colspan="3"] {
   padding: 56px 20px !important;
 }
-
 .dashboard-content-wrapper .course-table td[colspan="3"]::before {
   content: '📭';
   display: block;
@@ -655,21 +527,12 @@ input[name="credits"].status-select {
    RESPONSIVE
    ========================================================== */
 @media (max-width: 768px) {
-  .dashboard-content-wrapper > div:first-child {
-    width: 100%;
-  }
-
   .dashboard-content-wrapper .course-table td:first-child,
   .dashboard-content-wrapper .course-table th:first-child {
-    display: none;  /* ซ่อน ID column บนมือถือ */
+    display: none;
   }
 }
-
 @media (max-width: 480px) {
-  .dashboard-content-wrapper > div:first-child {
-    flex-direction: column;
-  }
-
   .request-card-body form > div[style*="flex"] {
     flex-direction: column !important;
   }
