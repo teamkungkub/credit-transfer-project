@@ -15,7 +15,6 @@
   border-radius: 20px;
   padding: 50px;
   color: white;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -27,7 +26,6 @@
   height: 200px;
   border-radius: 90%;
   overflow: hidden;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,7 +51,7 @@
   opacity: 0.8;
 }
 
-/* ---------------- RIGHT SIDE — ปรับใหม่ ---------------- */
+/* ---------------- RIGHT SIDE ---------------- */
 .right-box {
   flex: 1;
   display: flex;
@@ -81,20 +79,28 @@
   letter-spacing: -0.01em;
 }
 
-/* ---------------- INPUT FIELDS ---------------- */
+/* ---------------- INPUT FIELDS — ทั้ง 2 ช่องเหมือนกันทุกอย่าง ---------------- */
 .input-field {
   display: flex;
   align-items: center;
-  background: #f7f8fc;
-  border: 1.5px solid #e8ecf4;
+  /* กำหนด border ทุกด้านชัดเจน ป้องกัน CSS เก่า override */
+  border-top:    1.5px solid #e8ecf4 !important;
+  border-right:  1.5px solid #e8ecf4 !important;
+  border-bottom: 1.5px solid #e8ecf4 !important;
+  border-left:   1.5px solid #e8ecf4 !important;
   border-radius: 12px;
+  background: #f7f8fc;
   margin-bottom: 16px;
   padding: 0 14px;
+  box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-field:focus-within {
-  border-color: #7c9ef5;
+  border-top:    1.5px solid #7c9ef5 !important;
+  border-right:  1.5px solid #7c9ef5 !important;
+  border-bottom: 1.5px solid #7c9ef5 !important;
+  border-left:   1.5px solid #7c9ef5 !important;
   background: #fff;
   box-shadow: 0 0 0 3px rgba(91, 141, 253, 0.12);
 }
@@ -102,18 +108,21 @@
 .input-field .icon {
   font-size: 1rem;
   margin-right: 10px;
-  opacity: 0.5;
+  opacity: 0.45;
   flex-shrink: 0;
   line-height: 1;
   font-style: normal;
 }
 
 .input-field input {
-  width: 100%;
-  border: none;
+  flex: 1;
+  min-width: 0;
+  /* รีเซ็ต border ทุกด้านใน input ด้วย */
+  border: none !important;
+  border-bottom: none !important;
   outline: none;
   font-size: 0.95rem;
-  background: none;
+  background: transparent;
   font-family: "Prompt", sans-serif;
   color: #2d3748;
   padding: 13px 0;
@@ -122,6 +131,32 @@
 .input-field input::placeholder {
   color: #b0bac9;
   font-weight: 300;
+}
+
+/* ── ปุ่มตา show/hide password ── */
+.toggle-password {
+  background: none;
+  border: none !important;
+  outline: none;
+  cursor: pointer;
+  padding: 4px 0 4px 8px;
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+  opacity: 0.45;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.toggle-password:hover {
+  opacity: 0.85;
+  transform: scale(1.15);
+}
+
+.toggle-password:active {
+  transform: scale(0.95);
 }
 
 /* ---------------- FORGOT / REGISTER ---------------- */
@@ -155,7 +190,6 @@
   font-weight: 700;
   font-family: "Prompt", sans-serif;
   letter-spacing: 0.10em;
-
   background: linear-gradient(90deg, #5b8dfd 0%, #c45bff 100%);
   cursor: pointer;
   transition: 0.25s ease;
@@ -164,7 +198,6 @@
   overflow: hidden;
 }
 
-/* shimmer effect on hover */
 .gradient-btn::after {
   content: '';
   position: absolute;
@@ -179,9 +212,7 @@
   transition: transform 0.45s ease;
 }
 
-.gradient-btn:hover::after {
-  transform: translateX(100%);
-}
+.gradient-btn:hover::after { transform: translateX(100%); }
 
 .gradient-btn:hover {
   box-shadow: 0 6px 24px rgba(196, 91, 255, 0.40);
