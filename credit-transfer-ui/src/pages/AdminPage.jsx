@@ -200,7 +200,7 @@ function AdminPage() {
         <div className="dashboard-content-wrapper">
 
           {/* ปุ่มสลับแท็บ */}
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+          <div className="tab-group">
             <button
               className={`btn ${activeTab === 'institutions' ? 'btn-primary' : 'btn-secondary'}`}
               style={activeTab === 'institutions' ? { backgroundColor: '#dc3545' } : {}}

@@ -364,352 +364,313 @@ textarea.status-select {
   .header-menu .user-info { display: none; }
 }
 /* ==========================================================
-   AdminPage.css  —  Admin-specific overrides & enhancements
-   ต้อง import หลัง FacultyDashboard.css
+   AdminPage.css  —  Admin-specific styles
+   Import หลัง FacultyDashboard.css
+   Map 1:1 กับทุก className + inline style ใน AdminPage.jsx
    ========================================================== */
 
-/* ----------------------------------------------------------
-   HEADER  — Admin accent (override base)
-   JSX: style={{ borderBottom: '3px solid #dc3545' }}
-        style={{ color: '#dc3545' }} on h1
----------------------------------------------------------- */
-.faculty-dashboard .dashboard-header {
-  background: linear-gradient(to right, #1a1c23 0%, #23262f 100%);
-}
-
-.faculty-dashboard .dashboard-header h1 {
-  color: #ff4d5e;
-  font-size: 1.3rem;
-}
-
-.faculty-dashboard .dashboard-header .user-info {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.75);
-  font-size: 0.85rem;
-}
-
-.faculty-dashboard .dashboard-header .logout-button {
-  background: rgba(220,53,69,0.85);
-  border: 1px solid rgba(220,53,69,0.5);
-  backdrop-filter: blur(4px);
-}
-
-.faculty-dashboard .dashboard-header .logout-button:hover {
-  background: var(--red);
-}
-
-/* ----------------------------------------------------------
-   DASHBOARD CONTENT WRAPPER
-   JSX: className="dashboard-content-wrapper"
----------------------------------------------------------- */
+/* ==========================================================
+   JSX: <div className="dashboard-content-wrapper">
+   — wrapper หลักของเนื้อหาทั้งหน้า Admin
+   ========================================================== */
 .dashboard-content-wrapper {
   width: 100%;
-  animation: fadeUp 0.35s ease both;
+  animation: fadeUp 0.3s ease both;
 }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ----------------------------------------------------------
-   TAB BUTTONS ROW
+/* ==========================================================
+   TAB GROUP
    JSX: <div style={{ display:'flex', gap:'10px', marginBottom:'20px' }}>
-        className={`btn ${activeTab==='...' ? 'btn-primary' : 'btn-secondary'}`}
-        style={active ? { backgroundColor:'#dc3545' } : {}}
----------------------------------------------------------- */
-.dashboard-content-wrapper > div:first-child {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-  background: white;
+   — inline style (display:flex, gap, marginBottom) ทำงานเองแล้ว
+   NOTE: ไม่ override ด้วย child selector เพราะจะทำให้
+         max-width / margin:auto ของ .dashboard-main พัง
+         แนะนำเพิ่ม className="tab-group" ใน JSX ถ้าต้องการ pill style
+   ========================================================== */
+.tab-group {
+  display: inline-flex;
+  gap: 6px;
+  background: var(--surface);
   padding: 6px;
   border-radius: 12px;
-  box-shadow: var(--shadow-sm);
   border: 1px solid var(--border);
-  width: fit-content;
+  box-shadow: var(--sh-sm);
+  margin-bottom: 20px;
 }
 
-/* Tab button base state */
-.dashboard-content-wrapper .btn.btn-secondary {
+.tab-group .btn.btn-secondary {
   background: transparent;
-  color: var(--text-secondary);
+  color: var(--text-2);
   box-shadow: none;
-  padding: 9px 20px;
   border-radius: 8px;
-  font-size: 0.92rem;
-  transition: all var(--transition);
 }
 
-.dashboard-content-wrapper .btn.btn-secondary:hover {
+.tab-group .btn.btn-secondary:hover {
   background: var(--bg);
-  color: var(--text-primary);
+  color: var(--text);
   transform: none;
 }
 
-/* Tab button active state */
-.dashboard-content-wrapper .btn.btn-primary {
-  background: var(--red) !important;
-  color: white;
-  padding: 9px 20px;
+.tab-group .btn.btn-primary {
   border-radius: 8px;
-  font-size: 0.92rem;
   box-shadow: 0 3px 10px rgba(220,53,69,0.30);
 }
 
-/* ----------------------------------------------------------
-   ADD BUTTON  (+ เพิ่มข้อมูลใหม่)
-   JSX: className="btn btn-primary btn-add-small"
-        style={{ marginBottom:'20px', backgroundColor:'#dc3545' }}
----------------------------------------------------------- */
-.btn-add-small {
-  position: relative;
-  overflow: hidden;
-  padding: 9px 20px !important;
-  font-size: 0.9rem !important;
-  letter-spacing: 0.2px;
-  border-radius: 10px !important;
-}
-
-.btn-add-small::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: white;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.btn-add-small:hover::after { opacity: 0.08; }
-
-/* ----------------------------------------------------------
-   FORM CARD  (request-card with border: '2px solid #dc3545')
-   JSX: <div className="request-card" style={{ marginBottom:'20px', border:'2px solid #dc3545' }}>
----------------------------------------------------------- */
+/* ==========================================================
+   FORM CARD
+   JSX: <div className="request-card"
+              style={{ marginBottom: '20px', border: '2px solid #dc3545' }}>
+   — inline style set border แล้ว เราเพิ่ม visual enhancement
+   ========================================================== */
 .request-card[style*="border"] {
-  border-color: var(--red) !important;
-  box-shadow: 0 0 0 1px rgba(220,53,69,0.10), var(--shadow-md) !important;
-  animation: formSlideIn 0.25s ease both;
+  box-shadow: 0 0 0 1px rgba(220,53,69,0.08), var(--sh-md) !important;
+  animation: formIn 0.22s ease both;
 }
 
-@keyframes formSlideIn {
-  from { opacity: 0; transform: translateY(-10px); }
+@keyframes formIn {
+  from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Form card header  (background: '#fff5f5')  */
+/* FORM CARD HEADER
+   JSX: <div className="request-card-header"
+              style={{ background: '#fff5f5' }}>
+   — inline style set background แล้ว */
 .request-card[style*="border"] .request-card-header {
-  background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
-  margin: -24px -24px 0;
-  padding: 16px 24px;
+  margin: -20px -20px 0;
+  padding: 14px 20px;
   border-radius: 11px 11px 0 0;
   border-bottom: 1px solid #ffd6da;
+  /* background: #fff5f5  ← มาจาก inline style JSX */
 }
 
+/* FORM CARD HEADER h3
+   JSX: <h3 style={{ margin: 0 }}>{isEditing ? 'แก้ไขข้อมูล' : 'เพิ่มข้อมูลใหม่'}</h3> */
 .request-card[style*="border"] .request-card-header h3 {
   color: var(--red);
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-size: 0.85rem;
+  letter-spacing: 0.6px;
 }
 
-/* ----------------------------------------------------------
-   FORM FIELDS  — labels
+/* ==========================================================
+   FORM LABELS
    JSX: <label>ชื่อสถาบัน / หลักสูตรเดิม:</label>
-        <label>รหัสวิชา:</label>  etc.
----------------------------------------------------------- */
+        <label>รหัสวิชา:</label>
+        <label>ชื่อวิชา (ไทย):</label>
+        <label>หน่วยกิต:</label>
+        <label>สังกัดสถาบัน:</label>
+        <label>คำอธิบายรายวิชา:</label>
+   ========================================================== */
 .request-card-body label {
   display: block;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-2);
   margin-bottom: 6px;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
 }
 
-/* ----------------------------------------------------------
-   FORM ROW  (flex row for รหัสวิชา + ชื่อวิชา)
-   JSX: <div style={{ display:'flex', gap:'10px' }}>
-        <div style={{ flex:1, marginBottom:'10px' }}>
-        <div style={{ flex:2, marginBottom:'10px' }}>
----------------------------------------------------------- */
-.request-card-body > form > div[style*="flex"] {
-  gap: 14px !important;
-}
+/* ==========================================================
+   FORM FLEX ROW
+   JSX: <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ flex: 1, marginBottom: '10px' }}>   ← รหัสวิชา
+        <div style={{ flex: 2, marginBottom: '10px' }}>   ← ชื่อวิชา
+   — inline style ทำงานเองแล้ว ไม่ต้องเพิ่ม
+   ========================================================== */
 
-/* Credits input override */
-.request-card-body input[name="credits"] {
-  width: 110px !important;
+/* Credits input
+   JSX: style={{ width: '100px' }} — inline ทำงานแล้ว
+   เพิ่ม aesthetic */
+input[name="credits"].status-select {
   text-align: center;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1rem !important;
 }
 
-/* ----------------------------------------------------------
-   FORM SAVE BUTTON row
-   JSX: <div style={{ marginTop:'15px' }}>
-        <button type="submit" className="btn btn-primary" style={{ backgroundColor:'#dc3545' }}>
-        <button type="button" className="btn btn-secondary" style={{ marginLeft:'10px' }}>
----------------------------------------------------------- */
+/* ==========================================================
+   FORM SAVE BUTTON ROW
+   JSX: <div style={{ marginTop: '15px' }}>
+        <button type="submit" className="btn btn-primary"
+                style={{ backgroundColor: '#dc3545' }}>
+                บันทึก (Admin)
+        </button>
+        <button type="button" className="btn btn-secondary"
+                style={{ marginLeft: '10px' }}>
+                ยกเลิก
+        </button>
+   ========================================================== */
 .request-card-body form > div[style*="marginTop"] {
-  padding-top: 8px;
-  border-top: 1px solid var(--border);
-  margin-top: 20px !important;
+  border-top: 1px solid #f1f1f1;
+  padding-top: 16px;
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
-/* ----------------------------------------------------------
+/* ==========================================================
    DATA TABLE CARD
-   JSX: <div className="request-card">  (table wrapper)
----------------------------------------------------------- */
+   JSX: <div className="request-card">
+        <table className="course-table">
+   ========================================================== */
+
+/* ตาราง wrapper card — ไม่มี padding */
 .dashboard-content-wrapper > .request-card:last-child {
   padding: 0;
   overflow: hidden;
 }
 
-/* ----------------------------------------------------------
-   TABLE  — Admin version
----------------------------------------------------------- */
-.course-table thead tr {
-  background: linear-gradient(135deg, #1a1c23 0%, #2d303d 100%);
+/* TABLE THEAD
+   Admin override — dark header แทน default red */
+.dashboard-content-wrapper .course-table thead {
+  background: linear-gradient(135deg, #1e2029 0%, #2c2f3e 100%);
 }
 
-.course-table th {
+.dashboard-content-wrapper .course-table th {
+  color: rgba(255,255,255,0.82);
   font-size: 0.78rem;
   letter-spacing: 0.8px;
-  color: rgba(255,255,255,0.85);
-  padding: 14px 20px;
+  padding: 14px 18px;
 }
 
-.course-table td {
-  padding: 16px 20px;
+.dashboard-content-wrapper .course-table td {
+  padding: 15px 18px;
 }
 
-/* ID column */
-.course-table td:first-child,
-.course-table th:first-child {
-  width: 10%;
+/* ID column
+   JSX: <th style={{ width: '10%' }}>ID</th> */
+.dashboard-content-wrapper .course-table td:first-child {
   color: var(--text-muted);
-  font-weight: 500;
   font-size: 0.85rem;
+  font-weight: 500;
 }
 
-/* Manage column */
-.course-table td:last-child,
-.course-table th:last-child {
-  width: 20%;
+/* Manage column
+   JSX: <th style={{ width: '20%' }}>จัดการ</th> */
+.dashboard-content-wrapper .course-table td:last-child {
   white-space: nowrap;
 }
 
-/* ----------------------------------------------------------
-   TABLE  — Item info rendering
-   JSX: style={{ fontSize:'1.1rem', fontWeight:'bold' }}   ← institution name
-        style={{ color:'#dc3545', fontWeight:'bold' }}     ← course_code
-        <small style={{ color:'#666' }}>                  ← sub info
----------------------------------------------------------- */
-.course-table td > div > span[style*="dc3545"] {
+/* ==========================================================
+   TABLE CELL — Institution name
+   JSX: {item.name && (
+          <div style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>
+            {item.name}
+          </div>
+        )}
+   — inline style ทำงาน แต่เพิ่ม row styling
+   ========================================================== */
+.dashboard-content-wrapper .course-table tbody tr:hover {
+  background: #f7f8ff;
+}
+
+/* Zebra rows */
+.dashboard-content-wrapper .course-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+.dashboard-content-wrapper .course-table tbody tr:nth-child(even):hover {
+  background: #f7f8ff;
+}
+
+/* ==========================================================
+   TABLE CELL — Course code span
+   JSX: <span style={{ color: '#dc3545', fontWeight: 'bold' }}>
+          {item.course_code}
+        </span>
+   — inline style set color/weight แล้ว เพิ่ม pill styling
+   ========================================================== */
+.dashboard-content-wrapper .course-table td span[style*="dc3545"] {
   background: var(--red-light);
-  color: var(--red) !important;
   padding: 2px 8px;
   border-radius: 5px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  margin-right: 6px;
-}
-
-.course-table td > div[style*="bold"] {
-  font-size: 1rem !important;
-  color: var(--text-primary);
-}
-
-.course-table td small[style*="666"] {
-  color: var(--text-secondary) !important;
   font-size: 0.82rem;
-  margin-top: 4px;
-  display: block;
+  letter-spacing: 0.3px;
+  display: inline-block;
+  margin-right: 4px;
 }
 
-/* Row hover */
-.course-table tbody tr:hover { background: #f8f9ff; }
-
-/* Zebra subtle */
-.course-table tbody tr:nth-child(even) { background: #fafafa; }
-.course-table tbody tr:nth-child(even):hover { background: #f8f9ff; }
-
-/* ----------------------------------------------------------
-   ACTION BUTTONS in table
-   JSX: style={{ background:'#ffc107', color:'black', padding:'5px 10px', fontSize:'0.8rem', marginRight:'5px' }}
-        className="btn btn-reject" style={{ padding:'5px 10px', fontSize:'0.8rem' }}
----------------------------------------------------------- */
-
-/* Edit button (yellow) */
-.course-table td .btn[style*="ffc107"] {
-  background: #fff4cc !important;
-  color: #92660a !important;
-  border: 1px solid #ffe08a !important;
-  padding: 6px 12px !important;
+/* JSX: <small style={{ color: '#666' }}>หน่วยกิต... | สถาบัน:...</small> */
+.dashboard-content-wrapper .course-table td small[style*="666"] {
+  display: block;
+  margin-top: 4px;
+  line-height: 1.5;
   font-size: 0.82rem !important;
+}
+
+/* ==========================================================
+   TABLE BUTTONS
+   JSX: <button className="btn"
+                style={{ marginRight:'5px', background:'#ffc107',
+                         color:'black', padding:'5px 10px', fontSize:'0.8rem' }}>
+          แก้ไข
+        </button>
+   — inline style ทำงานแล้ว เพิ่ม hover/transition
+   ========================================================== */
+.dashboard-content-wrapper .course-table td .btn[style*="ffc107"] {
   font-weight: 600;
   border-radius: 6px !important;
-  margin-right: 6px;
-  transition: all var(--transition);
+  transition: filter 0.15s ease, transform 0.15s ease !important;
 }
 
-.course-table td .btn[style*="ffc107"]:hover {
-  background: #ffe599 !important;
-  border-color: #ffd04a !important;
+.dashboard-content-wrapper .course-table td .btn[style*="ffc107"]:hover {
+  filter: brightness(0.93);
   transform: translateY(-1px);
 }
 
-/* Delete button */
-.course-table .btn-reject {
-  padding: 6px 12px !important;
-  font-size: 0.82rem !important;
+/* JSX: <button className="btn btn-reject"
+                style={{ padding: '5px 10px', fontSize: '0.8rem' }}>
+   — inline style override padding/size */
+.dashboard-content-wrapper .course-table .btn-reject {
   font-weight: 600;
   border-radius: 6px !important;
 }
 
-/* ----------------------------------------------------------
+/* ==========================================================
    EMPTY STATE
-   JSX: <td colSpan="3" style={{ textAlign:'center', padding:'20px', color:'#999' }}>
-        -- ไม่พบข้อมูล --
----------------------------------------------------------- */
-.course-table td[colspan="3"] {
-  text-align: center !important;
-  padding: 60px 20px !important;
-  color: var(--text-muted) !important;
+   JSX: <td colSpan="3"
+            style={{ textAlign:'center', padding:'20px', color:'#999' }}>
+          -- ไม่พบข้อมูล --
+        </td>
+   — inline style ทำงานแล้ว เพิ่ม visual
+   ========================================================== */
+.dashboard-content-wrapper .course-table td[colspan="3"] {
+  padding: 56px 20px !important;
 }
 
-.course-table td[colspan="3"]::before {
+.dashboard-content-wrapper .course-table td[colspan="3"]::before {
   content: '📭';
   display: block;
-  font-size: 2.5rem;
+  font-size: 2.4rem;
   margin-bottom: 10px;
+  opacity: 0.6;
 }
 
-/* ----------------------------------------------------------
+/* ==========================================================
    RESPONSIVE
----------------------------------------------------------- */
+   ========================================================== */
 @media (max-width: 768px) {
-  .faculty-dashboard .dashboard-header h1 { font-size: 1rem; }
-  .faculty-dashboard .dashboard-header .user-info { display: none; }
+  .dashboard-content-wrapper > div:first-child {
+    width: 100%;
+  }
 
-  .course-table td:first-child,
-  .course-table th:first-child { width: auto; }
-
-  .course-table td:last-child,
-  .course-table th:last-child { width: auto; }
+  .dashboard-content-wrapper .course-table td:first-child,
+  .dashboard-content-wrapper .course-table th:first-child {
+    display: none;  /* ซ่อน ID column บนมือถือ */
+  }
 }
 
 @media (max-width: 480px) {
   .dashboard-content-wrapper > div:first-child {
-    width: 100%;
     flex-direction: column;
+  }
+
+  .request-card-body form > div[style*="flex"] {
+    flex-direction: column !important;
   }
 }
