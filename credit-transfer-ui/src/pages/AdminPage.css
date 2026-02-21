@@ -1,68 +1,111 @@
 /* ==========================================================
-   FacultyDashboard.css  —  Shared base styles
-   Map 1:1 กับ className ทุกตัวใน AdminPage.jsx
+   FacultyDashboard.css  —  Elegant Authority Theme
+   Font: Sarabun (Thai) + Prompt (display)
    ========================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Sarabun:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap');
+
+/* ----------------------------------------------------------
+   ROOT RESET — แก้ปัญหา React #root จำกัด width
+---------------------------------------------------------- */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+#root, #app, .App {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
 
 /* ----------------------------------------------------------
    CSS VARIABLES
 ---------------------------------------------------------- */
 :root {
-  --red:        #dc3545;
-  --red-dark:   #b92d3a;
-  --red-hover:  #c12934;
-  --red-light:  #fff0f1;
+  /* Brand colors */
+  --red:          #d63031;
+  --red-dark:     #a8262b;
+  --red-hover:    #c0392b;
+  --red-light:    #fff0f0;
+  --red-mid:      #fde8e8;
+  --red-glow:     rgba(214,48,49,0.22);
 
-  --bg:         #f4f5f9;
-  --surface:    #ffffff;
-  --surface-2:  #fafafa;
-  --border:     #e7e7e7;
+  /* Dark surfaces */
+  --dark:         #12141c;
+  --dark-2:       #1e2130;
+  --dark-3:       #2a2f42;
 
-  --text:       #1a1c23;
-  --text-2:     #6b7280;
-  --text-muted: #9ca3af;
+  /* Light surfaces */
+  --bg:           #f0f2f8;
+  --surface:      #ffffff;
+  --surface-2:    #f8f9fd;
+  --surface-3:    #f1f3f9;
 
-  --sh-sm:  0 1px 4px rgba(0,0,0,0.07);
-  --sh-md:  0 4px 18px rgba(0,0,0,0.09);
-  --sh-lg:  0 12px 40px rgba(0,0,0,0.11);
-  --sh-red: 0 4px 16px rgba(220,53,69,0.38);
+  /* Borders */
+  --border:       #e4e7f0;
+  --border-2:     #d0d4e4;
 
+  /* Text */
+  --text:         #111827;
+  --text-2:       #4b5563;
+  --text-muted:   #9ca3af;
+  --text-light:   rgba(255,255,255,0.90);
+  --text-dim:     rgba(255,255,255,0.50);
+
+  /* Shadows */
+  --sh-xs:  0 1px 3px rgba(0,0,0,0.06);
+  --sh-sm:  0 2px 10px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --sh-md:  0 6px 24px rgba(0,0,0,0.09), 0 2px 6px rgba(0,0,0,0.04);
+  --sh-lg:  0 20px 56px rgba(0,0,0,0.12), 0 4px 14px rgba(0,0,0,0.05);
+  --sh-red: 0 6px 20px rgba(214,48,49,0.40);
+
+  /* Radii */
+  --r-xs: 4px;
   --r-sm: 8px;
-  --r-md: 12px;
-  --t:    0.18s ease;
+  --r-md: 14px;
+  --r-lg: 20px;
+
+  /* Transitions */
+  --t:        0.18s ease;
+  --t-bounce: 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ----------------------------------------------------------
-   RESET
+   BASE
 ---------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
-  margin: 0;
-  font-family: 'Sarabun', 'DM Sans', sans-serif;
+  font-family: 'Sarabun', sans-serif;
   background: var(--bg);
   color: var(--text);
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ==========================================================
+/* ----------------------------------------------------------
+   .faculty-dashboard
    JSX: <div className="faculty-dashboard">
-   ========================================================== */
+---------------------------------------------------------- */
 .faculty-dashboard {
   width: 100%;
   min-height: 100vh;
+  display: block;
 }
 
-/* ==========================================================
-   JSX: <header className="dashboard-header"
-              style={{ borderBottom: '3px solid #dc3545' }}>
-   ========================================================== */
+/* ----------------------------------------------------------
+   .dashboard-header
+   JSX: style={{ borderBottom: '3px solid #dc3545' }}
+---------------------------------------------------------- */
 .dashboard-header {
-  background: #ffffff;
-  padding: 0 40px;
-  height: 64px;
+  background: linear-gradient(135deg, var(--dark) 0%, var(--dark-3) 100%);
+  padding: 0 48px;
+  height: 66px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -70,114 +113,162 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: var(--sh-sm);
+  width: 100%;
+  box-shadow: 0 4px 28px rgba(0,0,0,0.32);
 }
 
-/* JSX: <h1 style={{ color: '#dc3545' }}> */
+/* subtle dot pattern */
+.dashboard-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+/* JSX: h1 style={{ color:'#dc3545' }} */
 .dashboard-header h1 {
-  font-family: 'DM Sans', 'Sarabun', sans-serif;
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-family: 'Prompt', 'Sarabun', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
   margin: 0;
-  letter-spacing: -0.3px;
-  color: var(--red);
+  color: var(--text-light);
+  letter-spacing: 0.1px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* ==========================================================
-   JSX: <div className="header-menu">
-   ========================================================== */
+.dashboard-header h1::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  background: var(--red);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--red-glow);
+  flex-shrink: 0;
+}
+
+/* .header-menu */
 .header-menu {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
 }
 
-/* ==========================================================
-   JSX: <span className="user-info">
-   ========================================================== */
+/* .user-info */
 .user-info {
-  font-size: 1rem;
-  color: #444;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  padding: 5px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 20px;
+  letter-spacing: 0.1px;
 }
 
-/* ==========================================================
-   JSX: <button className="logout-button">
-   ========================================================== */
+/* .logout-button */
 .logout-button {
-  padding: 8px 14px;
-  border: none;
-  background: var(--red);
-  color: white;
+  padding: 7px 16px;
+  border: 1px solid rgba(214,48,49,0.45);
+  background: rgba(214,48,49,0.12);
+  color: #fca5a5;
   border-radius: var(--r-sm);
   cursor: pointer;
   font-family: 'Sarabun', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  transition: background var(--t), transform var(--t), box-shadow var(--t);
-  box-shadow: 0 2px 8px rgba(220,53,69,0.28);
+  transition: all var(--t);
 }
 .logout-button:hover {
-  background: var(--red-dark);
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
   transform: translateY(-1px);
   box-shadow: var(--sh-red);
 }
 .logout-button:active { transform: translateY(0); }
 
-/* ==========================================================
+/* ----------------------------------------------------------
+   .dashboard-main
    JSX: <main className="dashboard-main">
-   ★ นี่คือ layout หลัก — ต้องมี width + margin:auto เพื่อ center
-   ========================================================== */
+   ★ display:block (ไม่ใช้ flex!) — ป้องกัน layout พัง
+   ★ width:95% + margin:auto = centered
+---------------------------------------------------------- */
 .dashboard-main {
   width: 95%;
   max-width: 1400px;
-  margin: 40px auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  margin: 36px auto 60px;
+  display: block;
 }
 
-/* ==========================================================
-   JSX: className="btn"  /  "btn btn-primary"  /  "btn btn-secondary"
-   ========================================================== */
+/* ----------------------------------------------------------
+   BUTTONS
+---------------------------------------------------------- */
 .btn {
   border: none;
-  padding: 10px 18px;
-  border-radius: 10px;
+  padding: 9px 20px;
+  border-radius: var(--r-sm);
   cursor: pointer;
   font-family: 'Sarabun', sans-serif;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  transition: background var(--t), transform var(--t), box-shadow var(--t);
+  transition: all var(--t-bounce);
   display: inline-flex;
   align-items: center;
   gap: 6px;
   line-height: 1.2;
+  position: relative;
+  overflow: hidden;
 }
-.btn:active { transform: scale(0.97); }
 
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.btn:hover::before { opacity: 0.08; }
+.btn:active { transform: scale(0.96); }
+
+/* btn-primary: style={{ backgroundColor:'#dc3545' }} */
 .btn-primary {
   color: white;
-  background: var(--red);
-  box-shadow: 0 2px 8px rgba(220,53,69,0.28);
+  background: linear-gradient(135deg, var(--red) 0%, #e84545 100%);
+  box-shadow: 0 2px 10px rgba(214,48,49,0.30),
+              inset 0 1px 0 rgba(255,255,255,0.14);
 }
 .btn-primary:hover {
-  background: var(--red-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--sh-red);
+  transform: translateY(-2px);
+  box-shadow: var(--sh-red),
+              inset 0 1px 0 rgba(255,255,255,0.14);
 }
 
+/* btn-secondary */
 .btn-secondary {
-  background: #e0e0e0;
-  color: #333;
+  background: var(--surface);
+  color: var(--text-2);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--sh-xs);
 }
 .btn-secondary:hover {
-  background: #d5d5d5;
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  color: var(--text);
   transform: translateY(-1px);
+  box-shadow: var(--sh-sm);
 }
 
-/* JSX: className="btn btn-reject"  +  style={{ padding:'5px 10px', fontSize:'0.8rem' }} */
+/* btn-reject: style={{ padding:'5px 10px', fontSize:'0.8rem' }} */
 .btn-reject {
-  background: var(--red);
+  background: linear-gradient(135deg, var(--red) 0%, #e84545 100%);
   color: white;
   border: none;
   border-radius: var(--r-sm);
@@ -186,41 +277,43 @@ body {
   font-size: 0.9rem;
   font-weight: 600;
   padding: 6px 12px;
-  transition: background var(--t), transform var(--t);
-  box-shadow: 0 2px 6px rgba(220,53,69,0.25);
+  transition: all var(--t-bounce);
+  box-shadow: 0 2px 8px rgba(214,48,49,0.28);
 }
 .btn-reject:hover {
-  background: var(--red-dark);
   transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(214,48,49,0.42);
 }
 
-/* JSX: className="btn btn-primary btn-add-small" */
+/* btn-add-small: className="btn btn-primary btn-add-small" */
 .btn-add-small {
-  padding: 6px 14px !important;
-  font-size: 0.85rem !important;
+  padding: 8px 18px !important;
+  font-size: 0.88rem !important;
   border-radius: var(--r-sm) !important;
 }
 
-/* ==========================================================
-   JSX: <div className="request-card">
-   ========================================================== */
+/* ----------------------------------------------------------
+   .request-card
+   ★ width:100% สำคัญมาก
+---------------------------------------------------------- */
 .request-card {
   background: var(--surface);
   border-radius: var(--r-md);
-  padding: 20px;
+  padding: 24px;
   box-shadow: var(--sh-md);
-  transition: box-shadow var(--t);
-  /* ไม่ set border ที่นี่ — inline style ใน JSX จะ set เอง */
+  width: 100%;
+  border: 1px solid var(--border);
+  transition: box-shadow var(--t), transform var(--t);
 }
-.request-card:hover { box-shadow: var(--sh-lg); }
+.request-card:hover {
+  box-shadow: var(--sh-lg);
+  transform: translateY(-1px);
+}
 
-/* ==========================================================
-   JSX: <div className="request-card-header"
-              style={{ background: '#fff5f5' }}>  (เฉพาะ form card)
-   ========================================================== */
+/* .request-card-header */
 .request-card-header {
-  padding-bottom: 12px;
-  border-bottom: 2px solid #f1f1f1;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -229,51 +322,47 @@ body {
 }
 .request-card-header h3 {
   margin: 0;
-  font-family: 'DM Sans', 'Sarabun', sans-serif;
-  font-size: 1.4rem;
+  font-family: 'Prompt', 'Sarabun', sans-serif;
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--text);
 }
 
-/* ==========================================================
-   JSX: <div className="request-card-body">
-   ========================================================== */
-.request-card-body {
-  margin-top: 20px;
-}
+/* .request-card-body */
+.request-card-body { margin-top: 20px; }
 
-/* ==========================================================
-   JSX: className="status-select"  (input / select / textarea)
-        style={{ width: '100px' }}  ← inline override เฉพาะ credits
-   ========================================================== */
+/* ----------------------------------------------------------
+   .status-select (input / select / textarea)
+   style={{ width:'100px' }} ← inline override credits
+---------------------------------------------------------- */
 .status-select,
 textarea.status-select {
   width: 100%;
-  padding: 10px;
-  border: 2px solid var(--border);
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
   border-radius: var(--r-sm);
   outline: none !important;
   transition: border-color var(--t), box-shadow var(--t), background var(--t);
-  font-size: 1rem;
+  font-size: 0.96rem;
   font-family: 'Sarabun', sans-serif;
-  background-color: var(--surface-2);
+  background: var(--surface-2);
   color: var(--text);
 }
-.status-select:hover { border-color: #c8c8c8; }
+.status-select:hover { border-color: var(--border-2); }
 .status-select:focus,
 textarea.status-select:focus {
   border-color: var(--red);
   background: var(--surface);
-  box-shadow: 0 0 0 3px rgba(220,53,69,0.10);
+  box-shadow: 0 0 0 3px rgba(214,48,49,0.10);
 }
 textarea.status-select {
   resize: vertical;
   min-height: 110px;
 }
 
-/* ==========================================================
-   JSX: <table className="course-table">
-   ========================================================== */
+/* ----------------------------------------------------------
+   .course-table
+---------------------------------------------------------- */
 .course-table {
   width: 100%;
   border-collapse: collapse;
@@ -286,30 +375,30 @@ textarea.status-select {
 }
 .course-table th,
 .course-table td {
-  padding: 14px 16px;
+  padding: 13px 18px;
   text-align: left;
-  border-bottom: 1px solid #eee;
-  font-size: 0.95rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.93rem;
 }
 .course-table th {
-  font-family: 'DM Sans', 'Sarabun', sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
+  color: rgba(255,255,255,0.88);
 }
 .course-table tbody tr { transition: background var(--t); }
 .course-table tbody tr:last-child td { border-bottom: none; }
-.course-table tbody tr:hover { background: #fff5f6; }
-.course-table button { border-radius: 6px; }
+.course-table tbody tr:hover { background: #fff5f5; }
+.course-table button { border-radius: var(--r-xs); }
 
-/* ==========================================================
+/* ----------------------------------------------------------
    RESPONSIVE
-   ========================================================== */
+---------------------------------------------------------- */
 @media (max-width: 768px) {
   .dashboard-header { padding: 0 20px; }
-  .dashboard-header h1 { font-size: 1.1rem; }
-  .dashboard-main { width: 98%; margin: 20px auto; gap: 14px; }
+  .dashboard-header h1 { font-size: 1rem; }
+  .dashboard-main { width: 98%; margin: 16px auto 40px; }
   .request-card { padding: 16px; }
 }
 @media (max-width: 480px) {
@@ -317,223 +406,314 @@ textarea.status-select {
 }
 
 /* ==========================================================
-   AdminPage.css  —  Admin-specific styles
+   AdminPage.css  —  Admin-specific enhancements
    Import หลัง FacultyDashboard.css
    ========================================================== */
 
-/* ==========================================================
+/* ----------------------------------------------------------
+   .dashboard-content-wrapper
    JSX: <div className="dashboard-content-wrapper">
-   ★ ต้อง width:100% เพื่อให้กางเต็ม .dashboard-main
-   ========================================================== */
+   ★ width:100% + display:block
+---------------------------------------------------------- */
 .dashboard-content-wrapper {
   width: 100%;
-  animation: fadeUp 0.3s ease both;
+  display: block;
+  animation: pageIn 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ==========================================================
-   TAB GROUP  (ใช้ได้ถ้าเพิ่ม className="tab-group" ใน JSX)
-   JSX เดิมใช้ inline style={{ display:'flex', gap:'10px', marginBottom:'20px' }}
-   ซึ่งทำงานได้เองอยู่แล้ว — ไม่ต้องเพิ่ม selector ที่จะรบกวน layout
-   ========================================================== */
+/* ----------------------------------------------------------
+   .tab-group
+   JSX: <div className="tab-group">
+        btn: className={`btn ${active ? 'btn-primary':'btn-secondary'}`}
+             style={active ? { backgroundColor:'#dc3545' } : {}}
+---------------------------------------------------------- */
 .tab-group {
   display: inline-flex;
-  gap: 6px;
+  gap: 4px;
   background: var(--surface);
-  padding: 6px;
+  padding: 5px;
   border-radius: 12px;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   box-shadow: var(--sh-sm);
   margin-bottom: 20px;
 }
-.tab-group .btn.btn-secondary {
-  background: transparent;
-  color: var(--text-2);
-  box-shadow: none;
+
+.tab-group .btn {
   border-radius: 8px;
-}
-.tab-group .btn.btn-secondary:hover {
-  background: var(--bg);
-  color: var(--text);
-  transform: none;
-}
-.tab-group .btn.btn-primary {
-  border-radius: 8px;
-  box-shadow: 0 3px 10px rgba(220,53,69,0.30);
-}
-
-/* ==========================================================
-   FORM CARD
-   JSX: <div className="request-card"
-              style={{ marginBottom:'20px', border:'2px solid #dc3545' }}>
-   — ดัก inline style ที่มี border:#dc3545
-   ========================================================== */
-.request-card[style*="border"] {
-  box-shadow: 0 0 0 1px rgba(220,53,69,0.08), var(--sh-md) !important;
-  animation: formIn 0.22s ease both;
-}
-
-@keyframes formIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* JSX: <div className="request-card-header" style={{ background:'#fff5f5' }}> */
-.request-card[style*="border"] .request-card-header {
-  margin: -20px -20px 0;
-  padding: 14px 20px;
-  border-radius: 11px 11px 0 0;
-  border-bottom: 1px solid #ffd6da;
-}
-/* JSX: <h3 style={{ margin: 0 }}> ใน form card */
-.request-card[style*="border"] .request-card-header h3 {
-  color: var(--red);
-  font-size: 0.85rem !important;
-  font-weight: 700 !important;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-}
-
-/* ==========================================================
-   FORM LABELS
-   JSX: <label>ชื่อสถาบัน...</label>  <label>รหัสวิชา:</label> ฯลฯ
-   ========================================================== */
-.request-card-body label {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-2);
-  margin-bottom: 6px;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-}
-
-/* Credits input: JSX style={{ width:'100px' }} ทำงานแล้ว เพิ่มแค่ aesthetic */
-input[name="credits"].status-select {
-  text-align: center;
+  font-size: 0.9rem;
+  padding: 8px 18px;
   font-weight: 600;
 }
 
-/* ==========================================================
+/* inactive tab */
+.tab-group .btn.btn-secondary {
+  background: transparent;
+  border: none;
+  color: var(--text-2);
+  box-shadow: none;
+}
+.tab-group .btn.btn-secondary:hover {
+  background: var(--surface-2);
+  color: var(--text);
+  transform: none;
+  box-shadow: none;
+}
+.tab-group .btn.btn-secondary::before { display: none; }
+
+/* active tab */
+.tab-group .btn.btn-primary {
+  box-shadow: 0 2px 10px rgba(214,48,49,0.30);
+}
+
+/* ----------------------------------------------------------
+   btn-add-small margin
+   JSX: style={{ marginBottom:'20px' }}
+---------------------------------------------------------- */
+.btn.btn-add-small {
+  margin-bottom: 20px;
+  display: inline-flex;
+}
+
+/* ----------------------------------------------------------
+   FORM CARD
+   JSX: className="request-card"
+        style={{ marginBottom:'20px', border:'2px solid #dc3545' }}
+        header style={{ background:'#fff5f5' }}
+        h3 style={{ margin:0 }}
+---------------------------------------------------------- */
+.request-card[style*="border"] {
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 3px rgba(214,48,49,0.07), var(--sh-md) !important;
+  animation: formIn 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes formIn {
+  from { opacity: 0; transform: translateY(-10px) scale(0.99); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Form header strip */
+.request-card[style*="border"] .request-card-header {
+  background: linear-gradient(135deg, #fff5f4, #fef0ef) !important;
+  margin: -24px -24px 0;
+  padding: 13px 24px;
+  border-radius: 13px 13px 0 0;
+  border-bottom: 1px solid #fdd5d0;
+}
+
+.request-card[style*="border"] .request-card-header h3 {
+  font-family: 'Sarabun', sans-serif !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  color: var(--red) !important;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+/* ----------------------------------------------------------
+   FORM LABELS
+   JSX: <label>ชื่อสถาบัน / หลักสูตรเดิม:</label> etc.
+---------------------------------------------------------- */
+.request-card-body label {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-2);
+  margin-bottom: 7px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+/* credits input: style={{ width:'100px' }} ทำงานแล้ว */
+input[name="credits"].status-select {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem !important;
+}
+
+/* ----------------------------------------------------------
    FORM BUTTON ROW
    JSX: <div style={{ marginTop:'15px' }}>
-   ========================================================== */
+---------------------------------------------------------- */
 .request-card-body form > div[style*="marginTop"] {
-  border-top: 1px solid #f1f1f1;
-  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+  margin-top: 20px !important;
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-/* ==========================================================
+/* ----------------------------------------------------------
    DATA TABLE CARD
-   JSX: <div className="request-card">  ← wrapper ตาราง (ไม่มี inline border)
-   ★ ต้อง width:100% และไม่ set width:fit-content
-   ========================================================== */
+   JSX: <div className="request-card">  (ไม่มี inline border)
+   ★ padding:0  overflow:hidden  width:100%
+---------------------------------------------------------- */
 .dashboard-content-wrapper .request-card:not([style*="border"]) {
   padding: 0;
   overflow: hidden;
   width: 100%;
 }
 
-/* TABLE THEAD — Admin dark header */
+/* ----------------------------------------------------------
+   TABLE HEAD — dark slate
+---------------------------------------------------------- */
 .dashboard-content-wrapper .course-table thead {
-  background: linear-gradient(135deg, #1e2029 0%, #2c2f3e 100%);
+  background: linear-gradient(135deg, var(--dark) 0%, var(--dark-3) 100%);
 }
 .dashboard-content-wrapper .course-table th {
-  color: rgba(255,255,255,0.82);
-  font-size: 0.78rem;
-  letter-spacing: 0.8px;
-  padding: 14px 18px;
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  padding: 15px 20px;
+}
+.dashboard-content-wrapper .course-table th:first-child {
+  color: rgba(255,255,255,0.65);
 }
 .dashboard-content-wrapper .course-table td {
-  padding: 15px 18px;
+  padding: 16px 20px;
+  vertical-align: middle;
 }
 
-/* ID column — JSX: <th style={{ width:'10%' }}> */
+/* ID column */
 .dashboard-content-wrapper .course-table td:first-child {
   color: var(--text-muted);
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.82rem;
+  font-weight: 600;
+  position: relative;
 }
 
-/* Manage column — JSX: <th style={{ width:'20%' }}> */
+/* Manage column */
 .dashboard-content-wrapper .course-table td:last-child {
   white-space: nowrap;
 }
 
-/* Row hover + zebra */
-.dashboard-content-wrapper .course-table tbody tr:hover { background: #f7f8ff; }
-.dashboard-content-wrapper .course-table tbody tr:nth-child(even) { background: #fafafa; }
-.dashboard-content-wrapper .course-table tbody tr:nth-child(even):hover { background: #f7f8ff; }
-
-/* Course code pill
-   JSX: <span style={{ color:'#dc3545', fontWeight:'bold' }}>{item.course_code}</span> */
-.dashboard-content-wrapper .course-table td span[style*="dc3545"] {
-  background: var(--red-light);
-  padding: 2px 8px;
-  border-radius: 5px;
-  font-size: 0.82rem;
-  letter-spacing: 0.3px;
-  display: inline-block;
-  margin-right: 4px;
+/* Row styles */
+.dashboard-content-wrapper .course-table tbody tr:hover {
+  background: #fff8f7;
+}
+.dashboard-content-wrapper .course-table tbody tr:nth-child(even) {
+  background: var(--surface-2);
+}
+.dashboard-content-wrapper .course-table tbody tr:nth-child(even):hover {
+  background: #fff8f7;
 }
 
-/* Sub info — JSX: <small style={{ color:'#666' }}>หน่วยกิต... | สถาบัน:...</small> */
+/* Left accent bar on hover */
+.dashboard-content-wrapper .course-table tbody tr:hover td:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--red);
+  border-radius: 0 2px 2px 0;
+  animation: barIn 0.15s ease both;
+}
+@keyframes barIn {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+/* ----------------------------------------------------------
+   TABLE CELL — Institution name
+   JSX: <div style={{ fontSize:'1.1rem', fontWeight:'bold' }}>
+---------------------------------------------------------- */
+.dashboard-content-wrapper .course-table td div[style*="bold"] {
+  font-family: 'Sarabun', sans-serif !important;
+  font-size: 0.96rem !important;
+  font-weight: 600 !important;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* ----------------------------------------------------------
+   Course code pill
+   JSX: <span style={{ color:'#dc3545', fontWeight:'bold' }}>
+---------------------------------------------------------- */
+.dashboard-content-wrapper .course-table td span[style*="dc3545"] {
+  background: var(--red-mid);
+  color: var(--red) !important;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.76rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.4px;
+  display: inline-block;
+  margin-right: 5px;
+  border: 1px solid rgba(214,48,49,0.18);
+}
+
+/* Sub info: JSX <small style={{ color:'#666' }}> */
 .dashboard-content-wrapper .course-table td small[style*="666"] {
   display: block;
-  margin-top: 4px;
-  font-size: 0.82rem !important;
+  margin-top: 5px;
+  font-size: 0.80rem !important;
+  color: var(--text-2) !important;
+  line-height: 1.6;
 }
 
-/* Edit button (yellow)
-   JSX: style={{ background:'#ffc107', color:'black', padding:'5px 10px', fontSize:'0.8rem' }} */
+/* ----------------------------------------------------------
+   ACTION BUTTONS
+   Edit: style={{ background:'#ffc107', color:'black', ... }}
+   Delete: className="btn btn-reject" style={{ padding:'5px 10px', ... }}
+---------------------------------------------------------- */
 .dashboard-content-wrapper .course-table td .btn[style*="ffc107"] {
-  font-weight: 600;
+  background: #fef3c7 !important;
+  color: #854d0e !important;
+  border: 1px solid #fde68a !important;
+  font-weight: 700;
+  font-size: 0.80rem !important;
+  padding: 5px 12px !important;
   border-radius: 6px !important;
-  transition: filter 0.15s ease, transform 0.15s ease !important;
+  box-shadow: 0 1px 4px rgba(133,77,14,0.12);
+  transition: all var(--t-bounce) !important;
 }
 .dashboard-content-wrapper .course-table td .btn[style*="ffc107"]:hover {
-  filter: brightness(0.93);
-  transform: translateY(-1px);
+  background: #fde68a !important;
+  border-color: #fbbf24 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(133,77,14,0.20) !important;
 }
 
-/* Delete button
-   JSX: className="btn btn-reject" style={{ padding:'5px 10px', fontSize:'0.8rem' }} */
 .dashboard-content-wrapper .course-table .btn-reject {
-  font-weight: 600;
+  font-size: 0.80rem !important;
+  padding: 5px 12px !important;
   border-radius: 6px !important;
+  font-weight: 700;
 }
 
-/* Empty state
-   JSX: <td colSpan="3" style={{ textAlign:'center', padding:'20px', color:'#999' }}> */
+/* ----------------------------------------------------------
+   EMPTY STATE
+   JSX: <td colSpan="3" style={{ textAlign:'center', padding:'20px', color:'#999' }}>
+---------------------------------------------------------- */
 .dashboard-content-wrapper .course-table td[colspan="3"] {
-  padding: 56px 20px !important;
+  padding: 64px 20px !important;
+  text-align: center !important;
+  color: var(--text-muted) !important;
 }
 .dashboard-content-wrapper .course-table td[colspan="3"]::before {
-  content: '📭';
+  content: '📂';
   display: block;
-  font-size: 2.4rem;
-  margin-bottom: 10px;
-  opacity: 0.6;
+  font-size: 3rem;
+  margin-bottom: 12px;
+  filter: grayscale(0.2);
 }
 
-/* ==========================================================
+/* ----------------------------------------------------------
    RESPONSIVE
-   ========================================================== */
+---------------------------------------------------------- */
 @media (max-width: 768px) {
+  .tab-group { width: 100%; }
+  .tab-group .btn { flex: 1; justify-content: center; }
   .dashboard-content-wrapper .course-table td:first-child,
-  .dashboard-content-wrapper .course-table th:first-child {
-    display: none;
-  }
+  .dashboard-content-wrapper .course-table th:first-child { display: none; }
 }
 @media (max-width: 480px) {
-  .request-card-body form > div[style*="flex"] {
-    flex-direction: column !important;
-  }
+  .tab-group { flex-direction: column; border-radius: 10px; }
+  .request-card-body form > div[style*="flex"] { flex-direction: column !important; }
 }
