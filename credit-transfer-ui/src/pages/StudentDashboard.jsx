@@ -182,7 +182,7 @@ function StudentDashboard() {
       {/* HEADER */}
       <header className="dashboard-header glass-header">
         <img src="/logo.png" className="university-logo" alt="logo" />
-        <h1 className="header-title">📘 ระบบเทียบโอนผลการเรียน</h1>
+        <h1 className="header-title">ระบบเทียบโอนผลการเรียน</h1>
 
         <div className="header-menu">
           <div className="notification-wrapper">
