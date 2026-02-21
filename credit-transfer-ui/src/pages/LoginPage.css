@@ -7,7 +7,7 @@
   font-family: "Prompt", sans-serif;
 }
 
-/* ---------------- LEFT SIDE ---------------- */
+/* ---------------- LEFT SIDE — ไม่แก้ไข ---------------- */
 .left-box {
   flex: 1.2;
   background: linear-gradient(135deg, #5b8dfd, #c45bff);
@@ -27,7 +27,7 @@
   height: 200px;
   border-radius: 90%;
   overflow: hidden;
-  
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -38,7 +38,6 @@
   height: 300%;
   object-fit: cover;
 }
-
 
 .left-box p {
   font-size: 1.1rem;
@@ -54,109 +53,233 @@
   opacity: 0.8;
 }
 
-/* ---------------- RIGHT SIDE ---------------- */
+/* ---------------- RIGHT SIDE — ปรับใหม่ ---------------- */
 .right-box {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #f5f7fb;
 }
 
 .form-container {
-  width: 360px;
+  width: 380px;
   background: white;
-  padding: 30px;
+  padding: 44px 40px 36px;
+  border-radius: 20px;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.05),
+    0 12px 40px rgba(91, 141, 253, 0.10);
 }
 
 .form-container h2 {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 32px;
   font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a202c;
+  letter-spacing: -0.01em;
 }
 
 /* ---------------- INPUT FIELDS ---------------- */
 .input-field {
   display: flex;
   align-items: center;
-  border-bottom: 2px solid #ccc;
-  margin-bottom: 18px;
-  padding-bottom: 6px;
+  background: #f7f8fc;
+  border: 1.5px solid #e8ecf4;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  padding: 0 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-field:focus-within {
+  border-color: #7c9ef5;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(91, 141, 253, 0.12);
 }
 
 .input-field .icon {
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin-right: 10px;
+  opacity: 0.5;
+  flex-shrink: 0;
+  line-height: 1;
+  font-style: normal;
 }
 
 .input-field input {
   width: 100%;
   border: none;
   outline: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   background: none;
+  font-family: "Prompt", sans-serif;
+  color: #2d3748;
+  padding: 13px 0;
 }
 
+.input-field input::placeholder {
+  color: #b0bac9;
+  font-weight: 300;
+}
+
+/* ---------------- FORGOT / REGISTER ---------------- */
 .forgot-link {
   text-align: right;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
+  margin-top: -4px;
 }
 
 .forgot-link a {
   color: #6b6fcf;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
-/* ---------------- BUTTON ---------------- */
+.forgot-link a:hover {
+  color: #4a4fb8;
+  text-decoration: underline;
+}
+
+/* ---------------- LOGIN BUTTON ---------------- */
 .gradient-btn {
   width: 100%;
-  padding: 12px;
+  padding: 13px;
   border-radius: 30px;
   border: none;
   color: white;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: "Prompt", sans-serif;
+  letter-spacing: 0.10em;
 
-  background: linear-gradient(90deg, #4da3ff, #ff3de2);
+  background: linear-gradient(90deg, #5b8dfd 0%, #c45bff 100%);
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.25s ease;
+  box-shadow: 0 4px 16px rgba(91, 141, 253, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+/* shimmer effect on hover */
+.gradient-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.45s ease;
+}
+
+.gradient-btn:hover::after {
+  transform: translateX(100%);
 }
 
 .gradient-btn:hover {
-  opacity: 0.9;
+  box-shadow: 0 6px 24px rgba(196, 91, 255, 0.40);
   transform: translateY(-2px);
 }
 
-/* ---------------- SOCIAL ICONS ---------------- */
+.gradient-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(91, 141, 253, 0.25);
+}
+
+/* ---------------- SOCIAL SECTION ---------------- */
 .signup-text {
   text-align: center;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  font-size: 0.9rem;
+  margin-top: 24px;
+  margin-bottom: 14px;
+  font-size: 0.82rem;
+  color: #b0bac9;
+  font-weight: 400;
+  position: relative;
 }
+
+.signup-text::before,
+.signup-text::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 28%;
+  height: 1px;
+  background: #e8ecf4;
+}
+.signup-text::before { left: 0; }
+.signup-text::after  { right: 0; }
 
 .social-icons {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 14px;
 }
 
 .circle {
-  width: 34px;
-  height: 34px;
-  background: #ddd;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.fb { background: #1877f2; }
-.google { background: #ea4335; }
+.circle:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+}
+
+.fb      { background: #1877f2; }
+.google  { background: #ea4335; }
 .twitter { background: #1da1f2; }
-.insta { background: #d6249f; }
+.insta   { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
 
 /* ---------------- ERROR ---------------- */
 .error-text {
-  color: red;
+  color: #e53e3e;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
+  font-size: 0.875rem;
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  border-radius: 10px;
+  padding: 9px 14px;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 768px) {
+  .login-main {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .left-box {
+    margin: 20px 20px 0;
+    padding: 36px 28px;
+    align-items: center;
+    text-align: center;
+    border-radius: 20px;
+  }
+
+  .website-link {
+    position: static;
+    margin-top: 16px;
+  }
+
+  .right-box {
+    padding: 28px 20px 40px;
+  }
+
+  .form-container {
+    width: 100%;
+    max-width: 380px;
+    padding: 32px 24px 28px;
+  }
 }
