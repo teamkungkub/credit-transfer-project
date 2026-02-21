@@ -1,4 +1,369 @@
 /* ==========================================================
+   FacultyDashboard.css  —  Shared base styles
+   Map 1:1 กับ className ทุกตัวใน AdminPage.jsx
+   ========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Sarabun:wght@300;400;500;600;700&display=swap');
+
+/* ----------------------------------------------------------
+   CSS VARIABLES
+---------------------------------------------------------- */
+:root {
+  --red:        #dc3545;
+  --red-dark:   #b92d3a;
+  --red-hover:  #c12934;
+  --red-light:  #fff0f1;
+
+  --bg:         #f4f5f9;
+  --surface:    #ffffff;
+  --surface-2:  #fafafa;
+  --border:     #e7e7e7;
+
+  --text:       #1a1c23;
+  --text-2:     #6b7280;
+  --text-muted: #9ca3af;
+
+  --sh-sm:  0 1px 4px rgba(0,0,0,0.07);
+  --sh-md:  0 4px 18px rgba(0,0,0,0.09);
+  --sh-lg:  0 12px 40px rgba(0,0,0,0.11);
+  --sh-red: 0 4px 16px rgba(220,53,69,0.38);
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --t:    0.18s ease;
+}
+
+/* ----------------------------------------------------------
+   RESET
+---------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Sarabun', 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================
+   JSX: <div className="faculty-dashboard">
+   ========================================================== */
+.faculty-dashboard {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ==========================================================
+   JSX: <header className="dashboard-header"
+              style={{ borderBottom: '3px solid #dc3545' }}>
+   — inline style จะ override borderBottom
+   ========================================================== */
+.dashboard-header {
+  background: #ffffff;
+  padding: 0 40px;
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid var(--red);  /* ← ตรงกับ inline style ใน JSX */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--sh-sm);
+}
+
+/* JSX: <h1 style={{ color: '#dc3545' }}>
+   inline style จะ set สี — เราแค่จัดการ layout/font ที่นี่ */
+.dashboard-header h1 {
+  font-family: 'DM Sans', 'Sarabun', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.3px;
+  color: var(--red);  /* fallback; inline style ใน JSX ยังทำงาน */
+}
+
+/* ==========================================================
+   JSX: <div className="header-menu">
+   ========================================================== */
+.header-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* ==========================================================
+   JSX: <span className="user-info">Login as: {user?.username}</span>
+   ========================================================== */
+.user-info {
+  font-size: 1rem;
+  color: #444;
+}
+
+/* ==========================================================
+   JSX: <button onClick={logoutUser} className="logout-button">
+   ========================================================== */
+.logout-button {
+  padding: 8px 14px;
+  border: none;
+  background: var(--red);
+  color: white;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background var(--t), transform var(--t), box-shadow var(--t);
+  box-shadow: 0 2px 8px rgba(220,53,69,0.28);
+}
+
+.logout-button:hover {
+  background: var(--red-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--sh-red);
+}
+
+.logout-button:active { transform: translateY(0); }
+
+/* ==========================================================
+   JSX: <main className="dashboard-main">
+   ========================================================== */
+.dashboard-main {
+  width: 95%;
+  max-width: 1400px;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ==========================================================
+   JSX: className="btn"
+        className="btn btn-primary"
+        className="btn btn-secondary"
+        className={`btn ${activeTab==='...' ? 'btn-primary':'btn-secondary'}`}
+   ========================================================== */
+.btn {
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background var(--t), transform var(--t), box-shadow var(--t);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.2;
+}
+
+.btn:active { transform: scale(0.97); }
+
+/* JSX: className="btn btn-primary"
+        style={{ backgroundColor: '#dc3545' }}  ← inline override บนปุ่ม active tab */
+.btn-primary {
+  color: white;
+  background: var(--red);
+  box-shadow: 0 2px 8px rgba(220,53,69,0.28);
+}
+
+.btn-primary:hover {
+  background: var(--red-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--sh-red);
+}
+
+/* JSX: className="btn btn-secondary" */
+.btn-secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #d5d5d5;
+  transform: translateY(-1px);
+}
+
+/* JSX: className="btn btn-reject"
+        style={{ padding: '5px 10px', fontSize: '0.8rem' }} ← inline override ขนาด */
+.btn-reject {
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  transition: background var(--t), transform var(--t);
+  box-shadow: 0 2px 6px rgba(220,53,69,0.25);
+}
+
+.btn-reject:hover {
+  background: var(--red-dark);
+  transform: translateY(-1px);
+}
+
+/* JSX: className="btn btn-primary btn-add-small"
+        style={{ marginBottom: '20px', backgroundColor: '#dc3545' }} */
+.btn-add-small {
+  padding: 6px 14px !important;
+  font-size: 0.85rem !important;
+  border-radius: var(--r-sm) !important;
+}
+
+/* ==========================================================
+   JSX: <div className="request-card">
+        <div className="request-card"
+             style={{ marginBottom: '20px', border: '2px solid #dc3545' }}>
+   — border และ marginBottom ถูก set ด้วย inline style ใน form card
+   ========================================================== */
+.request-card {
+  background: var(--surface);
+  border-radius: var(--r-md);
+  padding: 20px;
+  box-shadow: var(--sh-md);
+  transition: box-shadow var(--t);
+}
+
+.request-card:hover { box-shadow: var(--sh-lg); }
+
+/* ==========================================================
+   JSX: <div className="request-card-header"
+              style={{ background: '#fff5f5' }}>  ← เฉพาะ form card
+   ========================================================== */
+.request-card-header {
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f1f1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* JSX: <h3 style={{ margin: 0 }}> ใน request-card-header */
+.request-card-header h3 {
+  margin: 0;
+  font-family: 'DM Sans', 'Sarabun', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ==========================================================
+   JSX: <div className="request-card-body">
+   ========================================================== */
+.request-card-body {
+  margin-top: 20px;
+}
+
+/* ==========================================================
+   JSX: className="status-select"
+        ใช้กับ <input>, <select>, <textarea>
+        style={{ width: '100px' }}  ← inline override เฉพาะช่องหน่วยกิต
+   ========================================================== */
+.status-select,
+textarea.status-select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--border);
+  border-radius: var(--r-sm);
+  outline: none !important;
+  transition: border-color var(--t), box-shadow var(--t), background var(--t);
+  font-size: 1rem;
+  font-family: 'Sarabun', sans-serif;
+  background-color: var(--surface-2);
+  color: var(--text);
+  appearance: auto;
+}
+
+.status-select:hover {
+  border-color: #c8c8c8;
+}
+
+.status-select:focus,
+textarea.status-select:focus {
+  border-color: var(--red);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(220,53,69,0.10);
+}
+
+textarea.status-select {
+  resize: vertical;
+  min-height: 110px;
+}
+
+/* ==========================================================
+   JSX: <table className="course-table">
+   ========================================================== */
+.course-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: var(--r-md);
+}
+
+/* JSX thead */
+.course-table thead {
+  background: var(--red);
+  color: white;
+}
+
+/* JSX: <th style={{ width: '10%' }}>ID</th>
+        <th>ข้อมูล</th>
+        <th style={{ width: '20%' }}>จัดการ</th> */
+.course-table th,
+.course-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+}
+
+.course-table th {
+  font-family: 'DM Sans', 'Sarabun', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.course-table tbody tr {
+  transition: background var(--t);
+}
+
+.course-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.course-table tbody tr:hover {
+  background: #fff5f6;
+}
+
+/* JSX: .course-table button (ปุ่มในตาราง) */
+.course-table button {
+  border-radius: 6px;
+}
+
+/* ----------------------------------------------------------
+   RESPONSIVE
+---------------------------------------------------------- */
+@media (max-width: 768px) {
+  .dashboard-header { padding: 0 20px; }
+  .dashboard-header h1 { font-size: 1.1rem; }
+  .dashboard-main { width: 98%; margin: 20px auto; gap: 14px; }
+  .request-card { padding: 16px; }
+}
+
+@media (max-width: 480px) {
+  .header-menu .user-info { display: none; }
+}
+/* ==========================================================
    AdminPage.css  —  Admin-specific overrides & enhancements
    ต้อง import หลัง FacultyDashboard.css
    ========================================================== */
